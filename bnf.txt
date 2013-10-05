@@ -29,27 +29,14 @@ direct_declarator	= id
 			| '(' + declarator + ')'
 			| direct_declarator + '[' + const_exp + ']'
 			| direct_declarator + '[' + ']'
-			| '$[' + direct_declarator + ',' + param_list + ']'
+			| '$[' + direct_declarator + ':' + param_list + ']'
 			| '$[' + direct_declarator + ']'
 			;
 param_list		= param_decl
 			| param_list + ',' + param_decl
 			;
 param_decl		= type_spec + declarator
-			| type_spec + abstract_declarator
 			| type_spec
-			;
-abstract_declarator	= '*'
-			| '*' + direct_abstract_declarator
-			| direct_abstract_declarator
-			;
-direct_abstract_declarator= '(' abstract_declarator ')'
-			| direct_abstract_declarator '[' const_exp ']'
-			|				'[' const_exp ']'
-			| direct_abstract_declarator '(' param_list ')'
-			| '(' param_list ')'
-			| direct_abstract_declarator + '(' + ')'
-			| '(' + ')'
 			;
 stat			= exp_stat
 			| compound_stat
@@ -70,7 +57,6 @@ stat_list		= stat
 			;
 selection_stat		= 'if' + '(' + exp + ')' + stat
 			| 'if' + '(' + exp + ')' + stat + 'else' + stat
-			| 'switch' + '(' + exp + ')' + stat
 			;
 iteration_stat		= 'while' + '(' + exp + ')' + stat
 			| 'do' + stat + 'while' + '(' + exp + ')' + ';'
@@ -83,9 +69,7 @@ jump_stat		= 'continue' + ';'
 			| 'return'	+ ';'
 			;
 exp			= const_exp
-			| unary_exp + assignment_operator + assignment_exp
-			;
-assignment_operator	= '<--'
+			| unary_exp + '<--' + assignment_exp
 			;
 const_exp		= logical_or_exp
 			;
