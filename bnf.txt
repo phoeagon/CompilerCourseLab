@@ -14,7 +14,7 @@ struct_spec		= 'struct' + id + '{' + struct_decl_list + '}'
 			| 'struct' + '{' + struct_decl_list + '}'
 			| 'struct' + id
 			;
-struct_decl_list	= struct_decl
+struct_decl_list	= struct_decl 
 			| struct_decl_list + struct_decl
 			;
 struct_decl		= declarator_list + ';'
@@ -93,13 +93,7 @@ logical_or_exp		= logical_and_exp
 			| logical_or_exp '||' logical_and_exp
 			;
 logical_and_exp		= inclusive_or_exp
-			| logical_and_exp '&&' inclusive_or_exp
-			;
-inclusive_or_exp	= exclusive_or_exp
-			| inclusive_or_exp '|' exclusive_or_exp
-			;
-exclusive_or_exp	= and_exp
-			| exclusive_or_exp '^' and_exp
+			| logical_and_exp '&&' and_exp
 			;
 and_exp			= equality_exp
 			| and_exp '&' equality_exp
