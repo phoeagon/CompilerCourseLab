@@ -4,44 +4,20 @@
 external_decl		= function_definition
 			| decl
 			;
-function_definition	= decl_specs + declarator + decl_list + compound_stat
-			| declarator + decl_list + compound_stat
-			| decl_specs + declarator + compound_stat
-			| declarator + compound_stat
+function_definition	= type_spec + declarator + compound_stat
 			;
-decl			= decl_specs + init_declarator_list + ';'
-			| decl_specs + ';'
+decl			= type_spec + declarator + ';'
 			;
-decl_list		= decl
-			| decl_list + decl
+type_spec		= 'void' | 'char' | 'int' | 'float' | struct_spec
 			;
-decl_specs		= type_spec + decl_specs
-			| type_spec
-			;
-
-type_spec		= 'void' | 'char' | 'int' | 'float' 
-			| struct_spec
-			;
-
-struct_spec		= struct + id + '{' + struct_decl_list + '}'
-			| struct + '{' + struct_decl_list + '}'
-			| struct + id
-			;
-struct			= 'struct' 
+struct_spec		= 'struct' + id + '{' + struct_decl_list + '}'
+			| 'struct' + '{' + struct_decl_list + '}'
+			| 'struct' + id
 			;
 struct_decl_list	= struct_decl
 			| struct_decl_list + struct_decl
 			;
-init_declarator_list	= init_declarator
-			| init_declarator_list + ',' + init_declarator
-			;
-init_declarator		= declarator
-			| declarator + '<--' + initializer
-			;
-struct_decl		= spec_qualifier_list + declarator_list + ';'
-			;
-spec_qualifier_list	= type_spec + spec_qualifier_list
-			| type_spec
+struct_decl		= declarator_list + ';'
 			;
 declarator_list		= declarator
 			| declarator_list + ',' + declarator
@@ -61,17 +37,14 @@ pointer			= '*'
 param_list		= param_decl
 			| param_list + ',' + param_decl
 			;
-param_decl		= decl_specs + declarator
-			| decl_specs + abstract_declarator
-			| decl_specs
+param_decl		= type_spec + declarator
+			| type_spec + abstract_declarator
+			| type_spec
 			;
 id_list			= id
 			| id_list + ',' + id
 			;
 initializer		= assignment_exp
-			;
-type_name		= spec_qualifier_list + abstract_declarator
-			| spec_qualifier_list
 			;
 abstract_declarator	= pointer
 			| pointer + direct_abstract_declarator
@@ -146,13 +119,11 @@ equality_exp		= relational_exp
 			| equality_exp '=' relational_exp
 			| equality_exp '!=' relational_exp
 			;
-relational_exp		= shift_expression
-			| relational_exp '<' shift_expression
-			| relational_exp '>' shift_expression
-			| relational_exp '<=' shift_expression
-			| relational_exp '>=' shift_expression
-			;
-shift_expression	= additive_exp
+relational_exp		= additive_exp
+			| relational_exp '<' additive_exp
+			| relational_exp '>' additive_exp
+			| relational_exp '<=' additive_exp
+			| relational_exp '>=' additive_exp
 			;
 additive_exp		= mult_exp
 			| additive_exp '+' mult_exp
@@ -164,23 +135,18 @@ mult_exp		= cast_exp
 			| mult_exp '%' cast_exp
 			;
 cast_exp		= unary_exp
-			| '(' type_name ')' cast_exp
+			| '(' type_spec ')' cast_exp
 			;
 unary_exp		= postfix_exp
-			| '++' unary_exp
-			| '--' unary_exp
 			| unary_operator cast_exp
 			;
 unary_operator		= '&' | '*' | '+' | '-' | '!'
 			;
-
 postfix_exp		= primary_exp
 			| postfix_exp + '[' + exp + ']'
-			| '$[' + postfix_exp + argument_exp_list + ']'
+			| '$[' + postfix_exp + ':'+ argument_exp_list + ']'
 			| '$[' + postfix_exp + ']'
-			| '$[' + postfix_exp + '-->' + id + ']'
-			| postfix_exp + '++'
-			| postfix_exp + '--'
+			| postfix_exp + '-->' + id 
 			;
 primary_exp		= id
 			| const
