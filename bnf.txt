@@ -1,4 +1,4 @@
-%token int_const char_const float_const id string enumeration_const
+%token int_const char_const float_const id string 
 %%
 
 translation_unit	= external_decl
@@ -20,21 +20,17 @@ decl_list		= decl
 			;
 decl_specs		= type_spec + decl_specs
 			| type_spec
-			| type_qualifier + decl_specs
-			| type_qualifier
 			;
 
-type_spec		= 'void' | 'char' | 'short' | 'int' | 'long' | 'float' | 'double' | 'signed' | 'unsigned'
-			| struct_or_union_spec
-			| enum_spec
+type_spec		= 'void' | 'char' | 'int' | 'float' 
+			| struct_spec
 			;
-type_qualifier		= 'const' | 'volatile'
+
+struct_spec		= struct + id + '{' + struct_decl_list + '}'
+			| struct + '{' + struct_decl_list + '}'
+			| struct + id
 			;
-struct_or_union_spec	= struct_or_union + id + '{' + struct_decl_list + '}'
-			| struct_or_union + '{' + struct_decl_list + '}'
-			| struct_or_union + id
-			;
-struct_or_union		= 'struct' | 'union'
+struct			= 'struct' 
 			;
 struct_decl_list	= struct_decl
 			| struct_decl_list + struct_decl
@@ -43,14 +39,12 @@ init_declarator_list	= init_declarator
 			| init_declarator_list + ',' + init_declarator
 			;
 init_declarator		= declarator
-			| declarator + '=' + initializer
+			| declarator + '<--' + initializer
 			;
 struct_decl		= spec_qualifier_list + struct_declarator_list + ';'
 			;
 spec_qualifier_list	= type_spec + spec_qualifier_list
 			| type_spec
-			| type_qualifier + spec_qualifier_list
-			| type_qualifier
 			;
 struct_declarator_list	= struct_declarator
 			| struct_declarator_list + ',' + struct_declarator
@@ -59,16 +53,6 @@ struct_declarator	= declarator
 			| declarator + ':' + const_exp
 			| ':' + const_exp
 			;
-enum_spec		= 'enum' + id + '{' + enumerator_list + '}'
-			| 'enum' + '{' + enumerator_list + '}'
-			| 'enum' + id
-			;
-enumerator_list		= enumerator
-			| enumerator_list + ',' + enumerator
-			;
-enumerator		= id
-			| id + '=' + const_exp
-			;
 declarator		= pointer + direct_declarator
 			| direct_declarator
 			;
@@ -76,17 +60,11 @@ direct_declarator	= id
 			| '(' + declarator + ')'
 			| direct_declarator + '[' + const_exp + ']'
 			| direct_declarator + '[' + ']'
-			| direct_declarator + '(' + param_type_list + ')'
-			| direct_declarator + '(' + id_list + ')'
-			| direct_declarator + '(' + ')'
+			| '$[' + direct_declarator + ',' + param_type_list + ']'
+			| '$[' + direct_declarator + ']'
 			;
-pointer			= '*' + type_qualifier_list
-			| '*'
-			| '*' + type_qualifier_list + pointer
+pointer			= '*'
 			| '*' + pointer
-			;
-type_qualifier_list	= type_qualifier
-			| type_qualifier_list + type_qualifier
 			;
 param_type_list		= param_list
 			| param_list + ',' + '...'
@@ -102,11 +80,6 @@ id_list			= id
 			| id_list + ',' + id
 			;
 initializer		= assignment_exp
-			| '{' + initializer_list + '}'
-			| '{' + initializer_list + ',' + '}'
-			;
-initializer_list	= initializer
-			| initializer_list + ',' + initializer
 			;
 type_name		= spec_qualifier_list + abstract_declarator
 			| spec_qualifier_list
@@ -164,7 +137,6 @@ jump_stat		= 'continue' + ';'
 			| 'return'	+ ';'
 			;
 exp			= assignment_exp
-			| exp ',' assignment_exp
 			;
 assignment_exp		= const_exp
 			| unary_exp + assignment_operator + assignment_exp
@@ -199,8 +171,6 @@ relational_exp		= shift_expression
 			| relational_exp '>=' shift_expression
 			;
 shift_expression	= additive_exp
-			| shift_expression '<<' additive_exp
-			| shift_expression '>>' additive_exp
 			;
 additive_exp		= mult_exp
 			| additive_exp '+' mult_exp
@@ -218,8 +188,6 @@ unary_exp		= postfix_exp
 			| '++' unary_exp
 			| '--' unary_exp
 			| unary_operator cast_exp
-			| 'sizeof' unary_exp
-			| 'sizeof' '(' type_name ')'
 			;
 unary_operator		= '&' | '*' | '+' | '-' | '~' | '!'
 			;
@@ -243,6 +211,5 @@ argument_exp_list	= assignment_exp
 const			= int_const
 			| char_const
 			| float_const
-			| enumeration_const
 			;
 
