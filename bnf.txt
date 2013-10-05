@@ -4,37 +4,37 @@
 external_decl		= function_definition
 			| decl
 			;
-function_definition	= type_spec + declarator + compound_stat
+function_definition	= type_spec  declarator  compound_stat
 			;
-decl			= type_spec + declarator + ';'
+decl			= type_spec  declarator  ';'
 			;
 type_spec		= 'void' | 'char' | 'int' | 'float' | struct_spec
 			;
-struct_spec		= 'struct' + id + '{' + struct_decl_list + '}'
-			| 'struct' + '{' + struct_decl_list + '}'
-			| 'struct' + id
+struct_spec		= 'struct'  id  '{'  struct_decl_list  '}'
+			| 'struct'  '{'  struct_decl_list  '}'
+			| 'struct'  id
 			;
 struct_decl_list	= struct_decl 
-			| struct_decl_list + struct_decl
+			| struct_decl_list  struct_decl
 			;
-struct_decl		= declarator_list + ';'
+struct_decl		= declarator_list  ';'
 			;
 declarator_list		= declarator
-			| declarator_list + ',' + declarator
+			| declarator_list  ','  declarator
 			;
-declarator		= '*' + direct_declarator
+declarator		= '*'  direct_declarator
 			| direct_declarator
 			;
 direct_declarator	= id
-			| '(' + declarator + ')'
-			| direct_declarator + '[' + logical_exp + ']'
-			| '$[' + direct_declarator + ':' + param_list + ']'
-			| '$[' + direct_declarator + ']'
+			| '('  declarator  ')'
+			| direct_declarator  '['  logical_exp  ']'
+			| '$['  direct_declarator  ':'  param_list  ']'
+			| '$['  direct_declarator  ']'
 			;
 param_list		= param_decl
-			| param_list + ',' + param_decl
+			| param_list  ','  param_decl
 			;
-param_decl		= type_spec + declarator
+param_decl		= type_spec  declarator
 			;
 stat			= exp_stat
 			| compound_stat
@@ -44,29 +44,29 @@ stat			= exp_stat
 			;
 exp_stat		= exp ';' | ';' 
 			;
-compound_stat		= '{' + decl_list + stat_list + '}'
-			| '{' + stat_list + '}'
-			| '{' + decl_list + '}'
-			| '{' + '}'
+compound_stat		= '{'  decl_list  stat_list  '}'
+			| '{'  stat_list  '}'
+			| '{'  decl_list  '}'
+			| '{'  '}'
 			;
 stat_list		= stat
-			| stat_list + stat
+			| stat_list  stat
 			;
-selection_stat		= 'if' + '(' + exp + ')' + stat
-			| 'if' + '(' + exp + ')' + stat + 'else' + stat
+selection_stat		= 'if'  '('  exp  ')'  stat
+			| 'if'  '('  exp  ')'  stat  'else'  stat
 			;
-iteration_stat		= 'while' + '(' + exp + ')' + stat
-			| 'do' + stat + 'while' + '(' + exp + ')' + ';'
-			| 'for' + '(' + exp + ';' + exp + ';' + exp + ')' + stat
-			| 'foreach' + '(' id + 'in' + stat + ')' + stat
+iteration_stat		= 'while'  '('  exp  ')'  stat
+			| 'do'  stat  'while'  '('  exp  ')'  ';'
+			| 'for'  '('  exp  ';'  exp  ';'  exp  ')'  stat
+			| 'foreach'  '(' id  'in'  stat  ')'  stat
 			;
-jump_stat		= 'continue' + ';'
-			| 'break' + ';'
-			| 'return' + exp + ';'
-			| 'return'	+ ';'
+jump_stat		= 'continue'  ';'
+			| 'break'  ';'
+			| 'return'  exp  ';'
+			| 'return'	 ';'
 			;
 exp			= logical_exp
-			| unary_exp + '<--' + assignment_exp
+			| unary_exp  '<--'  assignment_exp
 			;
 logical_exp		= relational_exp
 			| logical_and_exp '||' relational_exp
@@ -98,18 +98,18 @@ unary_exp		= postfix_exp
 unary_operator		=  '*' | '+' | '-' | '!'
 			;
 postfix_exp		= primary_exp
-			| postfix_exp + '[' + exp + ']'
-			| '$[' + postfix_exp + ':'+ argument_exp_list + ']'
-			| '$[' + postfix_exp + ']'
-			| postfix_exp + '-->' + id 
+			| postfix_exp  '['  exp  ']'
+			| '$['  postfix_exp  ':' argument_exp_list ']'
+			| '$['  postfix_exp  ']'
+			| postfix_exp '-->' id 
 			;
 primary_exp		= id
 			| const
 			| string
-			| '(' + exp + ')'
+			| '('  exp  ')'
 			;
 argument_exp_list	= assignment_exp
-			| argument_exp_list + ',' + assignment_exp
+			| argument_exp_list  ','  assignment_exp
 			;
 const			= int_const
 			| char_const
