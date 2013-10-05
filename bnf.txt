@@ -27,8 +27,7 @@ declarator		= '*' + direct_declarator
 			;
 direct_declarator	= id
 			| '(' + declarator + ')'
-			| direct_declarator + '[' + const_exp + ']'
-			| direct_declarator + '[' + ']'
+			| direct_declarator + '[' + logical_exp + ']'
 			| '$[' + direct_declarator + ':' + param_list + ']'
 			| '$[' + direct_declarator + ']'
 			;
@@ -36,7 +35,6 @@ param_list		= param_decl
 			| param_list + ',' + param_decl
 			;
 param_decl		= type_spec + declarator
-			| type_spec
 			;
 stat			= exp_stat
 			| compound_stat
@@ -44,8 +42,7 @@ stat			= exp_stat
 			| iteration_stat
 			| jump_stat
 			;
-exp_stat		= exp ';'
-			| ';'
+exp_stat		= exp ';' | ';' 
 			;
 compound_stat		= '{' + decl_list + stat_list + '}'
 			| '{' + stat_list + '}'
@@ -68,29 +65,20 @@ jump_stat		= 'continue' + ';'
 			| 'return' + exp + ';'
 			| 'return'	+ ';'
 			;
-exp			= const_exp
+exp			= logical_exp
 			| unary_exp + '<--' + assignment_exp
 			;
-const_exp		= logical_or_exp
-			;
-logical_or_exp		= logical_and_exp
-			| logical_or_exp '||' logical_and_exp
-			;
-logical_and_exp		= inclusive_or_exp
-			| logical_and_exp '&&' and_exp
-			;
-and_exp			= equality_exp
-			| and_exp '&' equality_exp
-			;
-equality_exp		= relational_exp
-			| equality_exp '=' relational_exp
-			| equality_exp '!=' relational_exp
+logical_exp		= relational_exp
+			| logical_and_exp '||' relational_exp
+			| logical_and_exp '&&' relational_exp
 			;
 relational_exp		= additive_exp
 			| relational_exp '<' additive_exp
 			| relational_exp '>' additive_exp
 			| relational_exp '<=' additive_exp
 			| relational_exp '>=' additive_exp
+			| relational_exp '=' additive_exp
+			| relational_exp '!=' additive_exp
 			;
 additive_exp		= mult_exp
 			| additive_exp '+' mult_exp
