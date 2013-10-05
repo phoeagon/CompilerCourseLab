@@ -8,7 +8,11 @@ function_definition	= type_spec  declarator  compound_stat
 			;
 decl			= type_spec  declarator  ';'
 			;
-type_spec		= 'void' | 'char' | 'int' | 'float' | struct_spec
+type_spec		= 'void' 
+			| 'char' 
+			| 'int' 
+			| 'float' 
+			| struct_spec
 			;
 struct_spec		= 'struct'  id  '{'  struct_decl_list  '}'
 			| 'struct'  '{'  struct_decl_list  '}'
@@ -42,7 +46,8 @@ stat			= exp_stat
 			| iteration_stat
 			| jump_stat
 			;
-exp_stat		= exp ';' | ';' 
+exp_stat		= exp ';' 
+			| ';' 
 			;
 compound_stat		= '{'  decl_list  stat_list  '}'
 			| '{'  stat_list  '}'
