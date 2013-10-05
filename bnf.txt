@@ -22,7 +22,7 @@ struct_decl		= declarator_list + ';'
 declarator_list		= declarator
 			| declarator_list + ',' + declarator
 			;
-declarator		= pointer + direct_declarator
+declarator		= '*' + direct_declarator
 			| direct_declarator
 			;
 direct_declarator	= id
@@ -32,8 +32,6 @@ direct_declarator	= id
 			| '$[' + direct_declarator + ',' + param_list + ']'
 			| '$[' + direct_declarator + ']'
 			;
-pointer			= '*'
-			;
 param_list		= param_decl
 			| param_list + ',' + param_decl
 			;
@@ -41,20 +39,13 @@ param_decl		= type_spec + declarator
 			| type_spec + abstract_declarator
 			| type_spec
 			;
-id_list			= id
-			| id_list + ',' + id
-			;
-initializer		= assignment_exp
-			;
-abstract_declarator	= pointer
-			| pointer + direct_abstract_declarator
+abstract_declarator	= '*'
+			| '*' + direct_abstract_declarator
 			| direct_abstract_declarator
 			;
 direct_abstract_declarator= '(' abstract_declarator ')'
 			| direct_abstract_declarator '[' const_exp ']'
 			|				'[' const_exp ']'
-			| direct_abstract_declarator '['	']'
-			|				'['	']'
 			| direct_abstract_declarator '(' param_list ')'
 			| '(' param_list ')'
 			| direct_abstract_declarator + '(' + ')'
@@ -91,9 +82,7 @@ jump_stat		= 'continue' + ';'
 			| 'return' + exp + ';'
 			| 'return'	+ ';'
 			;
-exp			= assignment_exp
-			;
-assignment_exp		= const_exp
+exp			= const_exp
 			| unary_exp + assignment_operator + assignment_exp
 			;
 assignment_operator	= '<--'
