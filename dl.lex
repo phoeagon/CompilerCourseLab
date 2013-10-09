@@ -1,37 +1,64 @@
 %{
-#include <stdlib.h>
+%include "dlang.hpp"
 }%
 
-%%
+%%				
+				{
+				}
 
-0
+0								{
+				}
 
-[1-9][0-9]*
+[1-9][0-9]*		
+				{
+				}
 
-">="
+">="			
+				{
+				}
 
-"<="
+"<="			
+				{
+				}
 
-"!="
+"!="			
+				{
+				}
 
-%%"=="
+%%"=="			
+				{
+				}
 
-"while"
 
-"if"
+"while"			
+				{
+				}
 
-"else"
+"if"			
+				{
+				}
 
-"for"
+"else"			
+				{
+				}
 
-"foreach"
+"for"			
+				{
+				}
 
-"do"
+"foreach"		
+				{
+				}
 
-[ \t]
+"do"			
+				{
+				}
 
-%%
+[ \t]			
+				{
+				}
 
-int yywrap(void){
+%%				
+int yywrap(void)				{
 	return 1;
 }
