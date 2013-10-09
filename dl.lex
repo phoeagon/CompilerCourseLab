@@ -1,12 +1,9 @@
 %{
-%include "dlang.hpp"
-}%
+	#include "dlang.hpp"
+%}
 
 %%				
-				{
-				}
-
-0								{
+0				{
 				}
 
 [1-9][0-9]*		
@@ -57,8 +54,7 @@
 [ \t]			
 				{
 				}
-
 %%				
-int yywrap(void)				{
+int yywrap(void){
 	return 1;
 }
