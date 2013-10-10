@@ -7,6 +7,8 @@
 
 #define NON_TYPE  				(0)
 #define INT_TYPE  (1)
+#define DB_TYPE   (2)
+#define ID_TYPE   (3)
 
 
 
@@ -29,9 +31,9 @@ extern int sym[100];
 #define TOKEN_EACH  			(4)
 #define TOKEN_NUM  				(5)
 #define TOKEN_ID  				(6)
-#define TOKEN_GE  				(7)
-#define TOKEN_LE  				(8)
-#define TOKEN_LE  				(9)
+#define TOKEN_GEQ  				(7)
+#define TOKEN_LEQ  				(8)
+#define TOKEN_NEQ  				(9)
 #define TOKEN_ASSIGN  			(10)
 #define TOKEN_LESS  			(11)
 #define TOKEN_GREAT  			(12)
