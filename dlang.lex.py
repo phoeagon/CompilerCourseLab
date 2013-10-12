@@ -2,13 +2,14 @@ import sys
 sys.path.insert(0,"../..")
 
 import ply.lex as lex
+from ply.lex import TOKEN
 
 # Reserved words
 reserved = (
     'BREAK', 'CHAR', 'CONST', 'CONTINUE', 
     'ELSE', 'FLOAT', 'FOREACH', 'FOR', 'GOTO', 'IF', 'INT', 
     'RETURN', 'SIZEOF', 'STATIC', 'STRUCT', 
-      'VOID',  'WHILE',
+      'VOID',  'WHILE', 'DEFINE'
     )
     
 tokens = reserved + (
@@ -37,6 +38,8 @@ tokens = reserved + (
     'LBRACE', 'RBRACE',
     'COMMA', 'PERIOD', 'SEMI', 'COLON', 'FUNCALL',
 
+	# Preprocessing macros
+	'MACRO'
 	)
 
 # Completely ignored characters
@@ -111,16 +114,19 @@ t_SCONST = r'\"([^\\\n]|(\\.))*?\"'
 # Character constant 'c' or L'c'
 t_CCONST = r'\'([^\\\n]|(\\.))*?\''
 
-# Comments
+# Comments (ignored)
 def t_comment(t):
     r'(/\*(.|\n)*?\*/)|(//[^\n]*)'
     t.lexer.lineno += t.value.count('\n')
 
-# Preprocessor directive (ignored)
-def t_preprocessor(t):
-    r'\#(.)*?\n'
-    t.lexer.lineno += 1
-    
+# Preprocessor directive (ignore)
+t_MACRO = r'\#(.)*?\n'
+@TOKEN(t_MACRO)
+def t_macro(t):
+	#t.type='MACRO'
+	t.lexer.lineno += 1
+	#return t;
+
 def t_error(t):
     print("Illegal character %s" % repr(t.value[0]))
     t.lexer.skip(1)

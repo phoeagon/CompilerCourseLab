@@ -1,5 +1,10 @@
 int numbers[100];
-void $[ q_sort : int left, int right]{
+/* this is an implementation of 
+ * quicksort
+ **/
+#define test
+#include "a.h"
+void $[ q_sort : int left, int right]{//quicksort
 	int pivot;
 int l_hold;
 int r_hold;
