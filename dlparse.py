@@ -12,11 +12,9 @@ import ply.yacc as yacc
 tokens = dllex.tokens
 
 # translation-unit:
-
 def p_translation_unit(t):
 	'''translation_unit	: external_decl
-			| translation_unit external_decl
-			'''
+					| translation_unit external_decl'''
 	pass
 	
 def p_external_decl(t):
@@ -40,15 +38,19 @@ def p_decl_list(t):
 	'''
 	pass
 
-def p_type_spec(t):
+def p_type_spec_1(t):
 	'''type_spec	: VOID
 				| CHAR
 				| INT 
 				| FLOAT
-				| struct_spec
-	'''		
+	'''
 	pass
-
+	
+def p_type_spec_2(t):
+	'''type_spec	: struct_spec
+	'''
+	pass
+	
 def p_struct_spec(t):	
 	'''struct_spec : STRUCT ID  LBRACE  struct_decl_list  RBRACE
 				| STRUCT  LBRACE  struct_decl_list  RBRACE
@@ -221,6 +223,7 @@ def p_const(t):
 	'''const		: ICONST
 				| CCONST
 				| FCONST'''
+	print t[0]
 	pass
 
 
@@ -230,13 +233,21 @@ def p_empty(t):
 
 
 def p_error(t):
-    print("Whoa. We're hosed")
+    if t:
+        print("Syntax error at '%s'" % t.value )
+    else:
+        print("Syntax error at EOF")
 
-import profile
+
+
+
 # Build the grammar
 
 yacc.yacc(method='SLR')
+print "Parser generated"
 
+#from pprint import pprint
+#pprint( vars( obj ) )
 #profile.run("yacc.yacc(method='LALR')")
 
 

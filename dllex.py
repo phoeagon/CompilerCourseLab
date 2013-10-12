@@ -103,7 +103,7 @@ def t_ID(t):
     return t
 
 # Integer literal
-t_ICONST = r'\d+?'
+t_ICONST = r'\d+'
 
 # Floating literal
 t_FCONST = r'((\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
@@ -133,6 +133,7 @@ def t_error(t):
     
 #lexer = lex.lex(optimize=1)
 lexer = lex.lex()
+print "Lexer generated"
 if __name__ == "__main__":
     lex.runmain(lexer)
 

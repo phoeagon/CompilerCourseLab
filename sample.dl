@@ -20,7 +20,7 @@ int r_hold;
 		}
 		while ((numbers[left] <= pivot) && (left < right))
 			left <- left + 1;
-		if (left <> right){
+		if (left != right){
 			numbers[right] <- numbers[left];
 			right <- right - 1;
 		}
