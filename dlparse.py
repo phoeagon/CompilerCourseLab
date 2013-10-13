@@ -23,6 +23,7 @@ class Node:
 	def __str__(self):
 		 ans = "{\n"+\
 				"\t type: '"+str(self.type)+"',\n"+\
+				"\t val: '"+str(self.val)+"',\n"+\
 				"\t val_type: '"+str(self.val_type)+"',\n"+\
 				"\t children: [\n";
 		 cnt = 0;

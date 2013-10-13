@@ -3,6 +3,7 @@ import dllex
 import ply.yacc as yacc
 import copy 
 
+
 import dlparse 
 
 Node=dlparse.Node
@@ -10,11 +11,17 @@ Node=dlparse.Node
 builtin_type = { 'int':'int' , 'float':'float' , 'char':'char' };
 
 context = copy.copy( builtin_type );
-    
+
+
+def debug_node( node , context ):
+        print  node .__str__()
+        print  context
+        
 def walk( node , context ):
     if ( not isinstance( node , Node ) ):
         return ; # '1', 'a' like literal nodes
-    node.val_type = 'void'
+    if ( node.val_type==''):
+        node.val_type = 'void'
     #
     if ( node.type=='compound_stat' or node.type=='function_definition'\
         or node.type=='struct_spec' ):
@@ -40,6 +47,7 @@ def walk( node , context ):
         node.val = node.children[0] 
         if node.children[0] in context:
             node.val_type = context[ node.children[0] ]
+        #debug_node( node , context );
     #elif ( node.type=='empty' ):    return
     elif ( node.type=='declarator'): 
         if ( node.children[0]=='*' ):
@@ -52,6 +60,7 @@ def walk( node , context ):
     #elif ( node.type=='translation_unit' ): return ;
     #elif ( node.type=='external_decl' ): return ;
     elif ( node.type=='function_definition' ): #TODO
+        #type_spec  declarator  compound_stat
         sub_context = copy.copy( context );
         # typespec
         walk( node.children[0] , sub_context );
@@ -60,6 +69,8 @@ def walk( node , context ):
         walk( node.children[1] , sub_context );
         node.val = node.children[1].val ;
         context[ node.val ] = node.val_type ;
+        context[ '@_param_'+node.val ] = sub_context ; # throw out param list
+        sub_context[ node.val ] = node.val_type ; #enable recursion
         # compound
         walk( node.children[2] , sub_context );
     elif ( node.type=='decl' ): #TODO
@@ -82,10 +93,10 @@ def walk( node , context ):
             node.val = '@struct_'+node.children[1].val;
         else:
             # struct id{ int field }
+            sub_context = copy.copy( context );
             node.val = '@struct_'+node.children[1].val;
-            walk ( node.children[3] , context );
-            context_backup[ node.val ] = context ;            
-            context = context_backup ; # prevent propogation
+            walk ( node.children[3] , sub_context );
+            context[ node.val ] = sub_context ;
         #
     elif ( node.type=='struct_decl' ): #TODO
         node.val_type = 'void';
@@ -112,23 +123,21 @@ def walk( node , context ):
         elif ( node.children[0]=='$' ):
             node.val_type = node.children[2].val_type ;
             node.val = node.children[2].val ;
-        elif ( node.children[0].type == 'direct_declarator' ):
+        elif ( node.children[1] == '[' ):
             # arr 
             node.val_type = node.children[0].val_type ;
             node.val = node.children[0].val ;
         return ;
-    elif ( node.type=='param_list' ): #TODO
-        context[ '!params' ] = {};
-        context[ '!params-cnt' ] = 0;
-        return ;
+    #elif ( node.type=='param_list' ): #TODO
     elif ( node.type=='param_decl' ): #TODO
         node.val_type = 'void';
-        if ( '!params' not in context or '!params-cnt' not in context):            
+        if ( ('!params' not in context) or ('!params-cnt' not in context)):            
             context[ '!params' ] = {};
             context[ '!params-cnt' ] = 0;
         context[ node.children[1].val ] = node.children[0].val ;
         context[ '!params' ] [ context[ '!params-cnt' ] ] = node.children[0].val;
         context[ '!params-cnt' ] += 1
+        #debug_node( node , context )
         #TODO!!!!!!!!!!!!! 
     elif ( node.type=='stat' ):
         node.val_type = 'void';
@@ -158,6 +167,7 @@ def walk( node , context ):
             legal = ('int','char','float')
             for i in pool:
                 if ( i not in legal ):
+                    debug_node( node , context )
                     raise Exception('Operator '+node.children[1]+ \
                         ' not applicable to type '+i)
             node.val_type = 'int' #default to int
@@ -172,8 +182,9 @@ def walk( node , context ):
             legal = ('int','char','float')
             for i in pool:
                 if ( i not in legal ):
-                    raise NameException('Operator '+node.children[1]+ \
-                        ' not applicable to type'+i)
+                    debug_node( node , context )
+                    raise Exception('Operator '+node.children[1]+ \
+                        ' not applicable to type '+i)
             if ( 'float' in pool ):            
                 node.val_type = 'float'
             elif ( 'int' in pool ):
@@ -196,11 +207,13 @@ def walk( node , context ):
             return ;
         elif ( node.children[0]=='$'): #TODO: Check argument type
             tmp = node.children[2].val
+            debug_node( node , context )
             node.val_type = context[ tmp ] ;
+            
         elif ( node.children[1]== '[' ): #CHECk TYPE
             node.val_type = node.children[0].val_type;
     elif ( node.type=='primary_exp' ):
-        if ( length( node.children ) > 1 ):
+        if ( len( node.children ) > 1 ):
             node.val_type = node.children[1].val_type ;
     #elif ( node.type=='argument_exp_list' )
     #elif ( node.type=='argument_exp_list' )
@@ -214,5 +227,4 @@ if __name__ == "__main__":
     from dlang import *
     import dlang
     walk( obj , context )
-    print  vars(obj) 
-    print vars(context)
+    debug_node( obj , context )
