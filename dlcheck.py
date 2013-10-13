@@ -47,7 +47,7 @@ def check_param_type ( node , func_name , context ):
     assert node.type == 'argument_exp_list'
     err_msg = 'Parameter list not fit for function '+func_name ;
     ll = [] ;
-    debug_node( node , context ); 
+    #debug_node( node , context ); 
     param_to_list ( node , ll );
     print ll ; 
     tmp = '@_func_'+func_name

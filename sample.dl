@@ -17,8 +17,8 @@ int $[main]{
 }
 void $[ q_sort : int numbers , int left, int right]{//quicksort
 	int pivot;
-int l_hold;
-int r_hold;
+	int l_hold;
+	int r_hold;
 	l_hold <- left;
 	r_hold <- right;
 	pivot <- numbers[left];
