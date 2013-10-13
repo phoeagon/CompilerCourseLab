@@ -18,4 +18,7 @@ while 1:
 
 # print data
 
-yacc.parse( data )
+obj=yacc.parse( data )
+
+#from pprint import pprint
+print  obj

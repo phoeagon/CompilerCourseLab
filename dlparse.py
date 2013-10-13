@@ -17,6 +17,21 @@ class Node:
 		 else:
 			  self.children = [ ]
 
+	def __str__(self):
+		 ans = "{\n"+\
+				"\t type: '"+str(self.type)+"',\n"+\
+				"\t val_type: '"+str(self.val_type)+"',\n"+\
+				"\t children: [\n";
+		 cnt = 0;
+		 for i in self.children:
+			 if ( (cnt)>0 ):
+				 ans+=','
+			 else:
+				cnt = 1
+			 ans += '\t'+i.__str__() + '\n';
+		 ans += "\t]\n}"
+		 return ans;
+
 # Get the token map
 tokens = dllex.tokens
 
