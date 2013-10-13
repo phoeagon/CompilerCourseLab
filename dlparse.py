@@ -13,7 +13,8 @@ noCollapse = False;
 class Node:
 	def __init__(self,type,val_type,children=None):
 		 self.type = type
-		 self.val_type = val_type 
+		 self.val_type = val_type
+		 self.val = '';
 		 if children:
 			  self.children = children
 		 else:
@@ -85,20 +86,15 @@ def p_type_spec_1(t):
 				| INT 
 				| FLOAT
 	'''
-	if ( collapse(t) ):
-		return
 	t[0] = Node( "type_spec" , "" , [ t[1] ] )
 	
 def p_type_spec_2(t):
 	'''type_spec	: struct_spec
 	'''
-	if ( collapse(t) ):
-		return
 	t[0] = Node( "type_spec" , "" , [ t[1] ] )
 	
 def p_struct_spec(t):	
 	'''struct_spec : STRUCT ident  LBRACE  struct_decl_list  RBRACE
-				| STRUCT  LBRACE  struct_decl_list  RBRACE
 				| STRUCT ident
 	'''
 	if ( collapse(t) ):
@@ -141,8 +137,7 @@ def p_direct_declarator(t):
 def p_param_list(t):
 	'''param_list	: param_decl
 				| param_list  COMMA  param_decl'''
-	if ( collapse(t) ):
-		return
+	# Cannot collapse: must create frame for param_decl in checker
 	t[0]=Node("param_list","", t[1:] )
 
 def p_param_decl(t):
@@ -285,8 +280,8 @@ def p_unary_operator(t):
 def p_postfix_exp(t):
 	'''postfix_exp	: primary_exp
 				| postfix_exp  LBRACKET  exp RBRACKET
-				| FUNCALL LBRACKET  postfix_exp COLON argument_exp_list RBRACKET
-				| FUNCALL LBRACKET  postfix_exp  RBRACKET
+				| FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
+				| FUNCALL LBRACKET  ident  RBRACKET
 				| postfix_exp ARROW ident '''
 	if ( collapse(t) ):
 		return

@@ -106,8 +106,8 @@ unary_operator		=  '*' | '+' | '-' | '!'
 			;
 postfix_exp		= primary_exp
 			| postfix_exp  '['  exp  ']'
-			| '$['  postfix_exp  ':' argument_exp_list ']'
-			| '$['  postfix_exp  ']'
+			| '$['  id  ':' argument_exp_list ']'
+			| '$['  id  ']'
 			| postfix_exp '-->' id 
 			;
 primary_exp		= id
