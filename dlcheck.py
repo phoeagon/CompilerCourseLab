@@ -20,7 +20,7 @@ def walk( node , context ):
         walk( i , context );
     #
     # Most nodes have this:
-    if ( len( children )== 1 ):
+    if ( len( children )== 1 and isinstance( node.children[0],Node ) ):
             node.val_type = node.children[0].val_type ;
     # Can be corrected below
     # now check type for itself
@@ -44,11 +44,23 @@ def walk( node , context ):
             context[ node.children[1] ] = node.val_type ;
     elif ( node.type=='decl' ): #TODO
         return ;
+    elif ( node.type=='stat' ):
+        node.val_type = 'void';
+        return ;
+    elif ( node.type=='exp_stat' ):
+        if ( !isinstance( node.children[0],Node ) )
+            node.val_type = 'void';
+    elif ( node.type=='iteration_stat' or node.type=='jump_stat' \
+            node.type=='selection_stat' or node.type=='stat_list' \
+            node.type='compound_stat' ):
+        node.val_type = 'void';
+        context = context_backup; # prevent identifier context propogate
+    #elif ( node.type=='p_exp'): #DUMMY STUB
     elif ( node.type=='assignment_exp'):
         if ( len ( node.children ) > 1 ):
             # a <- exp
             node.val_type = node.children[0].val_type ;
-    elif ( node.type=='relational_exp' || node.type=='logical_exp'):
+    elif ( node.type=='relational_exp' or node.type=='logical_exp'):
         if ( len ( node.children ) > 1 ):
             type1 = node.children[0].val_type ;
             type2 = node.children[2].val_type ;
