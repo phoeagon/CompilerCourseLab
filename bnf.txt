@@ -70,8 +70,7 @@ jump_stat		= 'continue'  ';'
 			| 'return'  exp  ';'
 			| 'return'	 ';'
 			;
-exp			= logical_exp
-			| assignment_exp ;
+exp			=  assignment_exp ;
 			
 assignment_exp = logical_exp 
 			| unary_exp  '<--'  assignment_exp
