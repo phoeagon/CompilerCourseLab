@@ -101,6 +101,9 @@ def walk( node , context ):
     elif ( node.type=='struct_decl' ): #TODO
         node.val_type = 'void';
         context[ node.children[1].val ] = node.children[0].val ;
+        if ( '@fields' not in context ):
+            context[ '@fields' ] = {};
+        context[ '@fields' ][ node.children[1].val  ] = node.children[0].val ;
     #elif ( node.type=='declarator_list' ): 
     elif ( node.type=='declarator' ):
         if ( node.children[0]=='*' ):
@@ -131,12 +134,12 @@ def walk( node , context ):
     #elif ( node.type=='param_list' ): #TODO
     elif ( node.type=='param_decl' ): #TODO
         node.val_type = 'void';
-        if ( ('!params' not in context) or ('!params-cnt' not in context)):            
-            context[ '!params' ] = {};
-            context[ '!params-cnt' ] = 0;
+        if ( ('@params' not in context) or ('@params-cnt' not in context)):            
+            context[ '@params' ] = {};
+            context[ '@params-cnt' ] = 0;
         context[ node.children[1].val ] = node.children[0].val ;
-        context[ '!params' ] [ context[ '!params-cnt' ] ] = node.children[0].val;
-        context[ '!params-cnt' ] += 1
+        context[ '@params' ] [ context[ '@params-cnt' ] ] = node.children[0].val;
+        context[ '@params-cnt' ] += 1
         #debug_node( node , context )
         #TODO!!!!!!!!!!!!! 
     elif ( node.type=='stat' ):
@@ -194,7 +197,7 @@ def walk( node , context ):
     elif ( node.type=='cast_exp' ): 
         if ( len ( node.children ) > 1 ):
             #LPAREN type_spec RPAREN cast_exp
-            node.val_type = node.children[3].val_type ;
+            node.val_type = node.children[1].val ;
     elif ( node.type=='unary_exp' ): 
         if ( len ( node.children ) > 1 ):
             #unary_operator cast_exp
@@ -204,7 +207,17 @@ def walk( node , context ):
             assert False;#force abort dereferencing pointer
     elif ( node.type=='postfix_exp' ):
         if ( node.children[1] == '->' ): #TODO!!!!!!!!!!!!!!!
-            return ;
+            err_msg = "Cannot find field "+node.children[2]\
+                    +" for object "+node.children[0].val ;
+            if ( node.children[0].val not in context ):
+                raise Exception( err_msg );
+            tmp = '@struct_'+context[ node.children[0].val ];
+            if ( tmp not in context ):
+                raise Exception( err_msg );
+            if ( '@fields' not in context[tmp] or
+                node.children[2].val not in context[tmp]['@fields'] ):
+                raise Exception( err_msg );
+            node.val_type = context[tmp]['@fields'][ node.children[2].val ];
         elif ( node.children[0]=='$'): #TODO: Check argument type
             tmp = node.children[2].val
             debug_node( node , context )
