@@ -5,7 +5,8 @@ import ply.yacc as yacc
 import dlparse.Node as Node
 
 symbol = {};
-
+        
+    
 def walk( node , context ):
     if ( not isinstance( node , Node ) ):
         return ; # '1', 'a' like literal nodes
@@ -23,18 +24,19 @@ def walk( node , context ):
     if ( len( children )== 1 and isinstance( node.children[0],Node ) ):
             node.val_type = node.children[0].val_type ;
     # Can be corrected below
+    #
     # now check type for itself
     if ( node.type=='const' ):
         # type should already be assigned by parser
         return
     elif ( node.type=='id' ):
         if node.children[0] not in context:
-            raise NameException('Undefined identifier '+node.children[0])
+            #raise NameException('Undefined identifier '+node.children[0])
+            node.val_type = node.children[0] 
         else:
             node.val_type = context[ node.children[0] ]
         return
-    elif ( node.type=='empty' ):
-        return
+    #elif ( node.type=='empty' ):    return
     elif ( node.type=='declarator'): #TODO
         if ( node.children[0]=='*' ):
             node.val_type = 'pointer' ;
@@ -62,14 +64,34 @@ def walk( node , context ):
     elif ( node.type=='struct_decl' ): #TODO
         return ;
     #elif ( node.type=='declarator_list' ): 
-    elif ( node.type=='declarator' ): #TODO
+    elif ( node.type=='declarator' ):
+        if ( node.children[0]=='*' ):
+            node.val_type = 'pointer';
+        else:
+            node.val_type = node.children[0].val_type ;
         return ;
     elif ( node.type=='direct_declarator' ): #TODO
+        length = len(node.children)
+        if ( length ==1 ): #Id
+            node.val_type = node.children[0].children[0];
+                #tmp_name is not applicable here because ID parser does not know whether
+                #   it is in a expression or declarator, and maybe we are
+                #   overriding a global name already in context[]
+        elif ( node.children[0]=='(' ):
+            # LPAREN  declarator  RPAREN
+            node.val_type = node.children[1].val_type ;
+        elif ( node.children[0]=='$' ):
+            node.val_type = node.children[2].val_type ;
+        elif ( node.children[0].val_type == 'direct_declarator' ):
+            # arr 
+            node.val_type = node.children[0].val_type ;
         return ;
     elif ( node.type=='param_list' ): #TODO
         return ;
     elif ( node.type=='param_decl' ): #TODO
-        return ;
+        if ( param not in node )
+            node.param = {};
+        node.param[ 
     elif ( node.type=='stat' ):
         node.val_type = 'void';
         return ;

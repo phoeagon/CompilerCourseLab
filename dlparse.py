@@ -113,19 +113,11 @@ def p_struct_decl_list(t):
 		return
 	t[0]=Node("struct_decl_list","", t[1:] )
 
-def p_struct_dec(t):
-	'struct_decl	: declarator_list  SEMI'
+def p_struct_decl(t):
+	'struct_decl	: type_spec declarator  SEMI'
 	if ( collapse(t) ):
 		return
 	t[0]=Node("struct_decl","", t[1:] )
-
-def p_declarator_list(t):
-	'''declarator_list	: declarator
-				| declarator_list  COMMA  declarator
-				'''
-	if ( collapse(t) ):
-		return
-	t[0]=Node("declarator_list","", t[1:] )
 
 def p_declarator(t):
 	'''declarator	: TIMES  direct_declarator
