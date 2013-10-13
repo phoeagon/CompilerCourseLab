@@ -5,10 +5,14 @@ int numbers[100];
 int left;
 #define test
 #include "a.h"
-void $[ q_sort : int left, int right]{//quicksort
+
 struct id{
-	int a;
-}b;
+	int o;
+}bb;
+int $[test]{
+	bb ->o<- 1;
+}
+void $[ q_sort : int left, int right]{//quicksort
 	int pivot;
 int l_hold;
 int r_hold;

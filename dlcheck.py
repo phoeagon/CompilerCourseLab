@@ -69,7 +69,7 @@ def walk( node , context ):
         walk( node.children[1] , sub_context );
         node.val = node.children[1].val ;
         context[ node.val ] = node.val_type ;
-        context[ '@_param_'+node.val ] = sub_context ; # throw out param list
+        context[ '@_func_'+node.val ] = sub_context ; # throw out param list
         sub_context[ node.val ] = node.val_type ; #enable recursion
         # compound
         walk( node.children[2] , sub_context );
@@ -207,15 +207,19 @@ def walk( node , context ):
             assert False;#force abort dereferencing pointer
     elif ( node.type=='postfix_exp' ):
         if ( node.children[1] == '->' ): #TODO!!!!!!!!!!!!!!!
-            err_msg = "Cannot find field "+node.children[2]\
-                    +" for object "+node.children[0].val ;
+            err_msg = "Cannot find field "+str(node.children[2])\
+                    +" for object "+str(node.children[0].val) ;
             if ( node.children[0].val not in context ):
+                debug_node( node , context )
                 raise Exception( err_msg );
-            tmp = '@struct_'+context[ node.children[0].val ];
+            tmp = context[ node.children[0].val ];
             if ( tmp not in context ):
+                print "tmp<-",tmp
+                debug_node( node , context )
                 raise Exception( err_msg );
             if ( '@fields' not in context[tmp] or
                 node.children[2].val not in context[tmp]['@fields'] ):
+                debug_node( node , context )
                 raise Exception( err_msg );
             node.val_type = context[tmp]['@fields'][ node.children[2].val ];
         elif ( node.children[0]=='$'): #TODO: Check argument type
