@@ -44,6 +44,32 @@ def walk( node , context ):
             context[ node.children[1] ] = node.val_type ;
     elif ( node.type=='decl' ): #TODO
         return ;
+    #elif ( node.type=='translation_unit' ): 
+    elif ( node.type=='function_definition' ): #TODO
+        return ;
+    elif ( node.type=='external_decl' ): #TODO
+        return ;
+    elif ( node.type=='function_definition' ): #TODO
+        return ;
+    elif ( node.type=='decl' ): #TODO
+        return ;
+    #elif ( node.type=='decl_list' ): 
+    elif ( node.type=='type_spec' ): #TODO
+        return ;
+    elif ( node.type=='struct_spec' ): #TODO
+        return ;
+    #elif ( node.type=='struct_decl_list' ): 
+    elif ( node.type=='struct_decl' ): #TODO
+        return ;
+    #elif ( node.type=='declarator_list' ): 
+    elif ( node.type=='declarator' ): #TODO
+        return ;
+    elif ( node.type=='direct_declarator' ): #TODO
+        return ;
+    elif ( node.type=='param_list' ): #TODO
+        return ;
+    elif ( node.type=='param_decl' ): #TODO
+        return ;
     elif ( node.type=='stat' ):
         node.val_type = 'void';
         return ;
