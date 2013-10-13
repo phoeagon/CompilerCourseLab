@@ -21,4 +21,5 @@ while 1:
 obj=yacc.parse( data )
 
 #from pprint import pprint
-print  obj
+if __name__ == "__main__":
+	print  obj

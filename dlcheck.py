@@ -14,7 +14,7 @@ context = copy.copy( builtin_type );
 
 rng= {'char':1 , 'int':2 , 'float':3 }
 
-debug = 1
+debug = 1;
 
 def debug_node( node , context ):
     if ( debug ):
@@ -49,7 +49,6 @@ def check_param_type ( node , func_name , context ):
     ll = [] ;
     #debug_node( node , context ); 
     param_to_list ( node , ll );
-    print ll ; 
     tmp = '@_func_'+func_name
     if tmp not in context:
         raise Exception( err_msg );
@@ -100,11 +99,6 @@ def walk( node , context ):
             node.val_type = context[ node.children[0] ]
         #debug_node( node , context );
     #elif ( node.type=='empty' ):    return
-    elif ( node.type=='declarator'): 
-        if ( node.children[0]=='*' ):
-            node.val_type = 'pointer' ;
-        else:
-            node.val_type = node.children[0].val_type ; #pass from below
     elif ( node.type=='decl' ): #TODO
         node.val_type = 'void';
         context[ node.children[1].val ] = node.children[0].val ;
@@ -144,7 +138,7 @@ def walk( node , context ):
         if ( len(node.children) == 2 ):
             node.val = '@struct_'+node.children[1].val;
         else:
-            # struct id{ int field }
+            # STRUCT ident  LBRACE  struct_decl_list  RBRACE
             sub_context = copy.copy( context );
             node.val = '@struct_'+node.children[1].val;
             walk ( node.children[3] , sub_context );
@@ -152,6 +146,8 @@ def walk( node , context ):
         #
     elif ( node.type=='struct_decl' ): #TODO
         node.val_type = 'void';
+        if node.children[1].val_type == 'pointer':
+            node.children[0].val = 'pointer'
         context[ node.children[1].val ] = node.children[0].val ;
         if ( '@fields' not in context ):
             context[ '@fields' ] = {};
@@ -309,5 +305,7 @@ def walk( node , context ):
 if __name__ == "__main__":
     from dlang import *
     import dlang
-    walk( obj , context )
-    debug_node( obj , context )
+    #walk( obj , context )
+    #debug_node( obj , context )
+    import jsonpickle
+    print jsonpickle.encode(obj, unpicklable=False)

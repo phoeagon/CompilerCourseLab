@@ -8,6 +8,7 @@ int left;
 
 struct id{
 	int o;
+	struct id *next;
 }bb;
 int $[test]{
 	bb ->o<- 1;
