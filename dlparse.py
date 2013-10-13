@@ -212,8 +212,7 @@ def p_exp(t):
 def p_assignment_exp(t):
 	'''assignment_exp	: logical_exp
 			| unary_exp EQUALS assignment_exp'''
-	if ( collapse(t) ):
-		return
+	# no collapse : to facilitate parameter type check
 	t[0]=Node("assignment_exp","", t[1:] )
 	
 def p_logical_exp(t):
@@ -303,7 +302,7 @@ def p_argument_exp_list(t):
 				| argument_exp_list COMMA assignment_exp'''
 	if ( collapse(t) ):
 		return
-	t[0]=Node("argument_exp_list","",[ t[1] ])
+	t[0]=Node("argument_exp_list","", t[1:] )
 
 def p_const_1(t):
 	'''const		: ICONST'''

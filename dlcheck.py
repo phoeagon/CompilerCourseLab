@@ -12,11 +12,62 @@ builtin_type = { 'int':'int' , 'float':'float' , 'char':'char' };
 
 context = copy.copy( builtin_type );
 
+rng= {'char':1 , 'int':2 , 'float':3 }
+
+debug = 1
 
 def debug_node( node , context ):
+    if ( debug ):
         print  node .__str__()
         print  context
-        
+
+def param_to_list( node , ll ):
+    if ( not isinstance( node , Node ) ):
+        return ;
+    if  node.type == 'assignment_exp' :
+        ll += [ node.val_type ]
+    else:
+        for i in node.children:
+            param_to_list( i , ll )
+
+def check_param_empty( func_name , context ):
+    err_msg = 'Parameter list not fit for function '+func_name ;
+    tmp = '@_func_'+func_name
+    if tmp not in context:
+        raise Exception( err_msg );
+    tmp2 = context[ tmp ];
+    if  '@params-cnt' not in tmp2 :
+        return True;
+    params_cnt = tmp2[ '@params-cnt' ];
+    if params_cnt > 0 :
+        raise Exception( err_msg );
+    return True;
+    
+def check_param_type ( node , func_name , context ):
+    assert node.type == 'argument_exp_list'
+    err_msg = 'Parameter list not fit for function '+func_name ;
+    ll = [] ;
+    debug_node( node , context ); 
+    param_to_list ( node , ll );
+    print ll ; 
+    tmp = '@_func_'+func_name
+    if tmp not in context:
+        raise Exception( err_msg );
+    tmp2 = context[ tmp ];
+    if ( '@params-cnt' not in tmp2 or
+        '@params' not in tmp2 ):
+        raise Exception( err_msg );
+    param_cnt = tmp2[ '@params-cnt' ]
+    if ( param_cnt != len(ll) ):
+        raise Exception( "Not of same length!\n"+err_msg );
+    for i in range( len(ll) ):
+        if ll[i] != tmp2[ '@params' ][i] :
+            if ( ll[i] not in rng  ) or \
+                ( tmp2['@params'][i] not in rng ):# or\
+                #rng[ll[i]] > rng
+                raise Exception( err_msg );
+    return True;
+
 def walk( node , context ):
     if ( not isinstance( node , Node ) ):
         return ; # '1', 'a' like literal nodes
@@ -71,6 +122,7 @@ def walk( node , context ):
         context[ node.val ] = node.val_type ;
         context[ '@_func_'+node.val ] = sub_context ; # throw out param list
         sub_context[ node.val ] = node.val_type ; #enable recursion
+        sub_context[ '@_func_'+node.val ] = sub_context ; # throw out param list
         # compound
         walk( node.children[2] , sub_context );
     elif ( node.type=='decl' ): #TODO
@@ -148,8 +200,16 @@ def walk( node , context ):
     elif ( node.type=='exp_stat' ):
         if ( not isinstance( node.children[0],Node ) ):
             node.val_type = 'void';
-    elif ( node.type=='iteration_stat' or node.type=='jump_stat' or\
-            node.type=='selection_stat' or node.type=='stat_list' or\
+    elif ( node.type=='iteration_stat' or \
+        node.type=='selection_stat' ):
+            if  node.children[0]=='while' :
+                if  node.children[2].val_type == 'void' :
+                    raise Exception( "Invalid condition" );
+            elif node.children[0] == 'do' :
+                if  node.children[4].val_type == 'void' :
+                    raise Exception( "Invalid condition" );
+    elif (  node.type=='jump_stat' or\
+             node.type=='stat_list' or\
             node.type=='compound_stat' ):
         if ( node.type == 'compound_stat' ):
             for i in node.children:
@@ -222,10 +282,16 @@ def walk( node , context ):
                 debug_node( node , context )
                 raise Exception( err_msg );
             node.val_type = context[tmp]['@fields'][ node.children[2].val ];
+            #
         elif ( node.children[0]=='$'): #TODO: Check argument type
+            # FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
             tmp = node.children[2].val
-            debug_node( node , context )
             node.val_type = context[ tmp ] ;
+            if ( len(node.children) == 6 ):
+                #debug_node( node , context ); raise Exception();
+                check_param_type( node.children[4] , tmp , context );
+            else:
+                check_param_empty( tmp , context );
             
         elif ( node.children[1]== '[' ): #CHECk TYPE
             node.val_type = node.children[0].val_type;
@@ -239,7 +305,7 @@ def walk( node , context ):
     #elif ( node.type=='argument_exp_list' )
     #elif ( node.type=='argument_exp_list' )
     #elif ( node.type=='argument_exp_list' )
-    
+
 if __name__ == "__main__":
     from dlang import *
     import dlang

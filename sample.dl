@@ -12,7 +12,10 @@ struct id{
 int $[test]{
 	bb ->o<- 1;
 }
-void $[ q_sort : int left, int right]{//quicksort
+int $[main]{
+	$[test];
+}
+void $[ q_sort : int numbers , int left, int right]{//quicksort
 	int pivot;
 int l_hold;
 int r_hold;
