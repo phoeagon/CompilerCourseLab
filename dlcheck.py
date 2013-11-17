@@ -327,4 +327,5 @@ if __name__ == "__main__":
 	#walk( obj , context )
 	#debug_node( obj , context )
 	import jsonpickle
+	print "\n"
 	print jsonpickle.encode(obj, unpicklable=False)
