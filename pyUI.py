@@ -179,12 +179,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         fileName = QFileDialog.getOpenFileName(self, self.tr("Open Image"), "~/", self.tr("Source Files (*.dl)"))
         self.fileName = fileName[0]
         print fileName
-        with open(fileName[0], 'r') as f:
-            self.consoleField.insertHtml(f.read())
+        os.system("highlight --syntax=c --inline-css " + fileName[0] + " > tmp.highlight")
+        with open("tmp.highlight", 'r') as f:
+            self.consoleField.setHtml(f.read())
+        os.system("rm tmp.highlight")
     def lexCheck(self):
         self.useConsole()
         with os.popen("python dllex.py < " + self.fileName) as f:
-            self.consoleField.insertPlainText(f.read())
+            self.consoleField.setPlainText(f.read())
     def grammarAnalysis(self):
         self.useTree()
         os.system("python dlcheck.py < "+ self.fileName + "| tail -n +4 > tmp.json")
