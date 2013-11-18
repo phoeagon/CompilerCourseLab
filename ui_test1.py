@@ -59,7 +59,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Dlang", None, QtGui.QApplication.UnicodeUTF8))
         self.openButt.setText(QtGui.QApplication.translate("MainWindow", "Open..", None, QtGui.QApplication.UnicodeUTF8))
         self.lexButt.setText(QtGui.QApplication.translate("MainWindow", "Lexial Check", None, QtGui.QApplication.UnicodeUTF8))
         self.grammarButt.setText(QtGui.QApplication.translate("MainWindow", "Grammar Analysis", None, QtGui.QApplication.UnicodeUTF8))

@@ -13,6 +13,7 @@ from PySide import QtCore, QtGui, QtXml
 from PySide.QtGui import QMainWindow, QPushButton, QApplication, QFileDialog, QMessageBox
  
 from ui_test1 import Ui_MainWindow
+from ui_code  import Ui_CodeWindow
 
 def json2xml(json_obj, mytag="Node", line_padding=""):
 	result_list = list()
@@ -192,12 +193,21 @@ class DomModel(QtCore.QAbstractItemModel):
  
 		return parentItem.node().childNodes().count()
 
- 
+class CodeWindow(QMainWindow, Ui_CodeWindow):
+	def __init__( self , html , parent=None):
+		super( CodeWindow , self).__init__(parent)
+		self.setupUi(self)
+		self.setContent( html )
+	def close( self ):
+		super( CodeWindow , self ).close()
+	
+	
 class MainWindow(QMainWindow, Ui_MainWindow):
 	def __init__(self, parent=None):
 		super(MainWindow, self).__init__(parent)
 		self.setupUi(self)
 		self.fileName = ""
+		self.codeFrame = None
 	def useConsole(self):
 		self.consoleField.setVisible(True)
 		self.treeView.setVisible(False)
@@ -208,7 +218,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.useConsole()
 		fileName = QFileDialog.getOpenFileName(self, self.tr("Open Image"), "~/", self.tr("Source Files (*.dl)"))
 		self.fileName = fileName[0]
-		print fileName
+		#print fileName
+		if self.fileName == u'':
+			return
 		#os.system("highlight --syntax=c --inline-css " + fileName[0] + " > tmp.highlight")
 		#with open("tmp.highlight", 'r') as f:
 		with open(self.fileName, 'r') as f:
@@ -217,7 +229,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			html = "<html><head><style>"+f.read()+"</style></head><body>"+html+"</body></html>"
 		#os.system("rm tmp.highlight")
 		#print html
-		self.consoleField.setHtml( html )
+		#self.consoleField.setHtml( html )
+		self.consoleField.setHtml("")
+		if self.codeFrame is None:
+			self.codeFrame = CodeWindow("", self)
+		self.codeFrame.setContent( html )
+		self.codeFrame.show()		
 		self.semanticButt.setEnabled(False)
 		self.codeGenButt.setEnabled(False)
 		self.grammarButt.setEnabled(False)
@@ -269,6 +286,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	def codeGen(self):
 		pass
 	def close(self):
+		if self.codeFrame is not None:
+			self.codeFrame.close();
 		super(MainWindow, self).close()
 	   
 if __name__ == '__main__':
