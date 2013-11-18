@@ -9,7 +9,7 @@ import ply.lex as lex
 data = ''
 while 1:
 	try:
-		s = raw_input('dl> ')
+		s = raw_input("")
 	except EOFError:
 		break
 	if not s: 

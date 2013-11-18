@@ -10,7 +10,7 @@ from pygments.lexers import CLexer
 from pygments.formatters import HtmlFormatter
 
 from PySide import QtCore, QtGui, QtXml
-from PySide.QtGui import QMainWindow, QPushButton, QApplication, QFileDialog
+from PySide.QtGui import QMainWindow, QPushButton, QApplication, QFileDialog, QMessageBox
  
 from ui_test1 import Ui_MainWindow
 
@@ -218,21 +218,37 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#os.system("rm tmp.highlight")
 		#print html
 		self.consoleField.setHtml( html )
+		self.semanticButt.setEnabled(False)
+		self.codeGenButt.setEnabled(False)
+		self.grammarButt.setEnabled(False)
 	def lexCheck(self):
 		self.useConsole()
 		with os.popen("python dllex.py < " + self.fileName) as f:
-			self.consoleField.setPlainText(f.read())
+			content=""
+			for line in f.readlines():
+				if  line[0:7]=='Illegal' :
+					line = '<font style="color:red;">' + line + '</font>';
+				content = content + line + "<br/>" ;
+			self.consoleField.setHtml( content )
+		self.grammarButt.setEnabled(True)
 	def grammarAnalysis(self):
 		self.useTree()
-		os.system("python dlcheck.py < "+ self.fileName + "| tail -n +4 > tmp.json")
-		with open("tmp.json", 'r') as f:
-			j = json.loads(f.read())
-			text_file = open("tmp.xml", "w")
-			text_file.write("<body>\n")
-			text_file.write(json2xml(j))
-			text_file.write("</body>\n")
-			text_file.close()
-
+		os.system("python dlcheck.py < "+ self.fileName + "| tail -n +3 > tmp.json")
+		try:
+			with open("tmp.json", 'r') as f:
+				j = json.loads(f.read())
+				text_file = open("tmp.xml", "w")
+				#text_file.write("<body>\n")
+				text_file.write(json2xml(j))
+				#text_file.write("</body>\n")
+				text_file.close()
+		except:
+			msgBox = QMessageBox()
+			msgBox.setText("Syntax Error.")
+			msgBox.exec_()
+			self.useConsole()
+			return
+			
 		#os.system("rm tmp.json")
 		fileName = "tmp.xml"
 		if True:
@@ -246,7 +262,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 					self.xmlPath = fileName
 				f.close()
 		#os.system("rm tmp.xml")
+		self.semanticButt.setEnabled(True)
 	def semanticCheck(self):
+		self.codeGenButt.setEnabled(True)
 		pass
 	def codeGen(self):
 		pass
