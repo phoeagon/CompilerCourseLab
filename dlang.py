@@ -18,7 +18,7 @@ while 1:
 
 # print data
 
-obj=yacc.parse( data )
+obj=yacc.parse( data , tracking=True)
 
 #from pprint import pprint
 if __name__ == "__main__":

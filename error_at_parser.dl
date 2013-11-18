@@ -5,11 +5,14 @@ int numbers[100];
 int left;
 #define test
 #include "a.h"
+//struct id{
+//	int o;
+//	struct id *next;
+//}bb;
+ 
 
-struct id{
-	int o;
-	struct id *next;
-}bb;
+
+
 $[test] int{
 	bb ->o<- 1;
 }

@@ -332,7 +332,7 @@ def p_ident(t):
 
 def p_error(t):
 	if t:
-		print("Syntax error at '%s' (Line %d)" % (t.value , t.lineno) )
+		print("Syntax error at '%s' (Line %d)" % (t.value , t.lineno ) )
 	else:
 		print("Syntax error at EOF")
 
