@@ -272,6 +272,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			msgBox.setText("Syntax Error.")
 			msgBox.exec_()
 			self.useConsole()
+			with os.popen("python dllex.py < " + self.fileName) as f:
+				self.consoleField.setPlainText( f.read() )
 			return
 			
 		#os.system("rm tmp.json")
