@@ -240,14 +240,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.grammarButt.setEnabled(False)
 	def lexCheck(self):
 		self.useConsole()
+		okay = True
 		with os.popen("python dllex.py < " + self.fileName) as f:
 			content=""
 			for line in f.readlines():
 				if  line[0:7]=='Illegal' :
+					okay = False
 					line = '<font style="color:red;">' + line + '</font>';
 				content = content + line + "<br/>" ;
 			self.consoleField.setHtml( content )
 		self.grammarButt.setEnabled(True)
+		if not okay:
+			msgBox = QMessageBox()
+			msgBox.setText("Lexer Error Occurred!")
+			msgBox.exec_()
+		
+		
 	def grammarAnalysis(self):
 		self.useTree()
 		os.system("python dlcheck.py < "+ self.fileName + "| tail -n +3 > tmp.json")
