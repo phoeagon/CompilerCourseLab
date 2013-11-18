@@ -4,6 +4,10 @@ import os
 import sys
 import json
 
+from pygments import highlight
+from pygments.lexers import CLexer
+from pygments.formatters import HtmlFormatter
+
 from PySide import QtCore, QtGui, QtXml
 from PySide.QtGui import QMainWindow, QPushButton, QApplication, QFileDialog
  
@@ -179,10 +183,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         fileName = QFileDialog.getOpenFileName(self, self.tr("Open Image"), "~/", self.tr("Source Files (*.dl)"))
         self.fileName = fileName[0]
         print fileName
-        os.system("highlight --syntax=c --inline-css " + fileName[0] + " > tmp.highlight")
-        with open("tmp.highlight", 'r') as f:
-            self.consoleField.setHtml(f.read())
-        os.system("rm tmp.highlight")
+        #os.system("highlight --syntax=c --inline-css " + fileName[0] + " > tmp.highlight")
+        #with open("tmp.highlight", 'r') as f:
+        with open(self.fileName, 'r') as f:
+			html=highlight( f.read() , CLexer() , HtmlFormatter() )
+        with open("./misc/github.css", 'r') as f:
+			html = "<html><head><style>"+f.read()+"</style></head><body>"+html+"</body></html>"
+        #os.system("rm tmp.highlight")
+        print html
+        self.consoleField.setHtml( html )
     def lexCheck(self):
         self.useConsole()
         with os.popen("python dllex.py < " + self.fileName) as f:
