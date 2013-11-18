@@ -22,18 +22,20 @@ def json2xml(json_obj, mytag="Node", line_padding=""):
 	cnt = 0 ;
 	if json_obj_type is list:
 		for sub_elem in json_obj:
-			#print type(sub_elem)
+			print len(json_obj)
 			result_list.append(json2xml(sub_elem, "item"+str(cnt) , line_padding))
 			cnt += 1
-
-		return "<"+mytag+">"+("\n".join(result_list))+"</"+mytag+">";
+		
+		inner = "\n".join(result_list) 
+		print inner
+		return "<"+mytag+">"+ inner +"</"+mytag+">";
 
 	myparams = {}
 	if json_obj_type is dict:
 		for tag_name in json_obj:
 			sub_obj = json_obj[tag_name]
 			#result_list.append("<%s>" % (tag_name))
-			print type(sub_obj)
+			#print type(sub_obj)
 			if ( type(sub_obj) is unicode ) or ( type(sub_obj) is str ) :
 				myparams[ tag_name ] = sub_obj 
 			else:
@@ -48,8 +50,10 @@ def json2xml(json_obj, mytag="Node", line_padding=""):
 		result_list.append("</%s>" % (mytag))
 
 		return "\n".join(result_list)
-
-	return "%s" % (json_obj)
+	
+	#if ( json_obj == u"<-" ) or ( json_obj ==u"->" ):
+	return "<![CDATA["+json_obj+"]]>"
+	#return "%s" % (json_obj)
 
 class DomItem(object):
 	def __init__(self, node, row, parent=None):
@@ -212,7 +216,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		with open("./misc/github.css", 'r') as f:
 			html = "<html><head><style>"+f.read()+"</style></head><body>"+html+"</body></html>"
 		#os.system("rm tmp.highlight")
-		print html
+		#print html
 		self.consoleField.setHtml( html )
 	def lexCheck(self):
 		self.useConsole()
