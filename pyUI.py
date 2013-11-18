@@ -22,13 +22,15 @@ def json2xml(json_obj, mytag="Node", line_padding=""):
 
 	cnt = 0 ;
 	if json_obj_type is list:
+		if len(json_obj)==1:
+			return json2xml(json_obj[0], mytag , line_padding)
 		for sub_elem in json_obj:
-			print len(json_obj)
+			#print len(json_obj)
 			result_list.append(json2xml(sub_elem, "item"+str(cnt) , line_padding))
 			cnt += 1
 		
 		inner = "\n".join(result_list) 
-		print inner
+		#print inner
 		return "<"+mytag+">"+ inner +"</"+mytag+">";
 
 	myparams = {}
@@ -272,7 +274,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			msgBox.setText("Syntax Error.")
 			msgBox.exec_()
 			self.useConsole()
-			with os.popen("python dllex.py < " + self.fileName) as f:
+			with open("tmp.json", 'r') as f:
 				self.consoleField.setPlainText( f.read() )
 			return
 			
