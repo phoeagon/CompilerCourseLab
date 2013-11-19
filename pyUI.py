@@ -29,9 +29,10 @@ def json2xml(json_obj, mytag="Node", line_padding=""):
 			result_list.append(json2xml(sub_elem, "item"+str(cnt) , line_padding))
 			cnt += 1
 		
-		inner = "\n".join(result_list) 
+		inner = "\n".join(result_list)
+		return inner ;
 		#print inner
-		return "<"+mytag+">"+ inner +"</"+mytag+">";
+		#return "<"+mytag+">"+ inner +"</"+mytag+">";
 
 	myparams = {}
 	if json_obj_type is dict:
