@@ -189,7 +189,7 @@ def p_iteration_stat(t):
 	'''iteration_stat	: WHILE  LPAREN  exp  RPAREN  stat
 				| DO  stat  WHILE  LPAREN  exp  RPAREN  SEMI
 				| FOR  LPAREN  exp SEMI  exp  SEMI exp  RPAREN  stat
-				| FOREACH  LPAREN ident IN  stat  RPAREN  stat'''
+				| FOREACH  LPAREN ident IN  exp  RPAREN  stat'''
 	if ( collapse(t) ):
 		return
 	t[0]=Node("iteration_stat","", t[1:] )
