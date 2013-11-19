@@ -26,7 +26,7 @@ def json2xml(json_obj, mytag="Node", line_padding=""):
 			return json2xml(json_obj[0], mytag , line_padding)
 		for sub_elem in json_obj:
 			#print len(json_obj)
-			result_list.append(json2xml(sub_elem, "item"+str(cnt) , line_padding))
+			result_list.append(json2xml(sub_elem, "Node" , line_padding))
 			cnt += 1
 		
 		inner = "\n".join(result_list)
@@ -211,6 +211,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.setupUi(self)
 		self.fileName = ""
 		self.codeFrame = None
+		self.grammarButt.setEnabled(False)
+		self.semanticButt.setEnabled(False)
+		self.codeGenButt.setEnabled(False)
+		self.lexButt.setEnabled(False)
 	def useConsole(self):
 		self.consoleField.setVisible(True)
 		self.treeView.setVisible(False)
@@ -237,7 +241,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		if self.codeFrame is None:
 			self.codeFrame = CodeWindow("", self)
 		self.codeFrame.setContent( html )
-		self.codeFrame.show()		
+		self.codeFrame.show()
+		self.lexButt.setEnabled(True)
 		self.semanticButt.setEnabled(False)
 		self.codeGenButt.setEnabled(False)
 		self.grammarButt.setEnabled(False)
