@@ -46,6 +46,13 @@ def p_iteration_stat( node ):
 		pass
 	elif ( node.children[0] == 'FOR' ):
 		#FOR  LPAREN  exp SEMI  exp  SEMI exp  RPAREN  stat
+		rand_tag = get_random_tag();
+		tmp.push( node.children[2].codegen() );#to do
+		tmp.push( node.children[4].codegen() ); #test condition
+		tmp.push( "je "+rand_tag );
+		tmp.push( node.children[8].codegen() );#compound stat
+		tmp.push( node.children[6].codegen() );#to update var
+		tmp.push( rand_tag+" :" );
 		pass
 	elif ( node.children[0] == 'FOREACH' ):
 		#FOREACH  LPAREN ident IN  exp  RPAREN  stat
