@@ -80,6 +80,8 @@ def translate_binary_exp( node ):
 		tmp.push("or %ebx, %eax");
 	elif node.value == '&&':
 		tmp.push("and %ebx, %eax");
+	elif node.value == '<-':
+		tmp.push("movl %ebx, %(eax)");
 	tmp.push("push %eax");
 	return tmp
 
