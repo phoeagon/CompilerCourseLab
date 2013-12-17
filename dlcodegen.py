@@ -1,3 +1,10 @@
+import string
+import random
+
+def get_random_tag(prefix="tag",size=6):
+	chars=string.ascii_uppercase + string.digits
+	return prefix.join(random.choice(chars) for x in range(size))
+
 def get_lvalue( node ):
 	return ""
 
@@ -12,7 +19,38 @@ def translate_unary_exp( node ):
 	return tmp 
 	
 def translate_function_definition( node ):
-		
+	tmp = [ "push %ebp" , "mov %esp, %ebp"];
+
+	return tmp ;
+
+def translate_const( node ):
+	# test if is
+	pass
+
+def p_iteration_stat( node ):
+	tmp = [] ;
+	if ( node.children[0]=='WHILE' ):
+		rand_tag = get_random_tag();
+		tmp.push( node.children[2].codegen() ); #condition
+		tmp.push( "je "+rand_tag );
+		tmp.push( node.children[4].codegen() );#to write
+		tmp.push( rand_tag+" :" );
+		#WHILE  LPAREN  exp  RPAREN  stat
+	elif ( node.children[0] == 'DO' ):
+		rand_tag = get_random_tag();
+		tmp.push( rand_tag+" :" );
+		tmp.push( node.children[4].codegen() );#to write
+		tmp.push( node.children[2].codegen() ); #condition
+		tmp.push( "jne "+rand_tag );
+		#DO  stat  WHILE  LPAREN  exp  RPAREN  SEMI
+		pass
+	elif ( node.children[0] == 'FOR' ):
+		#FOR  LPAREN  exp SEMI  exp  SEMI exp  RPAREN  stat
+		pass
+	elif ( node.children[0] == 'FOREACH' ):
+		#FOREACH  LPAREN ident IN  exp  RPAREN  stat
+		pass
+	return tmp ;
 
 def translate_compound( node ):
 
