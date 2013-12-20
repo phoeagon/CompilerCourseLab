@@ -180,6 +180,8 @@ def check_postfix_expr( node , context ):
 		return True;
 	return False;
 
+
+
 def walk( node , context ):
 	if ( not isinstance( node , Node ) ):
 		return ; # '1', 'a' like literal nodes
