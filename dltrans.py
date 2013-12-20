@@ -37,3 +37,18 @@ def translate_function_definition \
 	result+= ");@nodisplay;"
 	print "Procedure: ",result
 	return result
+
+def get_var_list( node , context , context_backup ):
+	result=""
+	func_name = node.val
+	cnt = 0
+	for ( ele in context )
+		if ( type(context[ele])=='str' ):
+			if ( (ele not in context_backup ) or ( context[ele]!=context_backup[ele]) ):
+				# now a hit
+				if cnt==0 :
+					result = "var \n"
+				cnt=cnt+1;
+				result = result + "" +":" + "\n";
+	
+	
