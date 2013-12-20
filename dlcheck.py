@@ -249,6 +249,7 @@ def walk( node , context ):
 			context[ '@params-cnt' ] = 0;
 		context[ node.children[1].val ] = node.children[0].val ;
 		context[ '@params' ] [ context[ '@params-cnt' ] ] = node.children[0].val;
+		context[ '@params' ] [ "@pt_"+str(context[ '@params-cnt' ]) ] = node.children[1].val;
 		context[ '@params-cnt' ] += 1
 		#debug_node( node , context )
 		#TODO!!!!!!!!!!!!! 

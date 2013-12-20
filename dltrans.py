@@ -32,7 +32,7 @@ def translate_function_definition \
 		else:
 			result=result+";";
 		print tmp2['@params']
-		result += tmp2['@params'][i]+":"+get_type(tmp2['@params'][i]);
+		result += tmp2['@params']["@pt_"+str(i)]+":"+get_type(tmp2['@params'][i]);
 	#epilog
 	result+= ");@nodisplay;"
 	print "Procedure: ",result
