@@ -222,6 +222,8 @@ def p_logical_exp(t):
 	if ( collapse(t) ):
 		return
 	t[0]=Node("logical_exp","", t[1:] )
+	if (len(t[0].children)==3):
+		t[0].val=t[2] #operator
 
 def p_relational_exp(t):
 	'''relational_exp	: additive_exp
@@ -235,6 +237,8 @@ def p_relational_exp(t):
 	if ( collapse(t) ):
 		return
 	t[0]=Node("relational_exp","", t[1:] )
+	if (len(t[0].children)==3):
+		t[0].val=t[2] #operator
 
 def p_additive_exp(t):
 	'''additive_exp	: mult_exp
@@ -243,7 +247,8 @@ def p_additive_exp(t):
 	if ( collapse(t) ):
 		return
 	t[0]=Node("additive_exp","", t[1:] )
-	pass
+	if (len(t[0].children)==3):
+		t[0].val=t[2] #operator
 
 def p_mult_exp(t):
 	'''mult_exp	: cast_exp
@@ -253,6 +258,8 @@ def p_mult_exp(t):
 	if ( collapse(t) ):
 		return
 	t[0]=Node("mult_exp","", t[1:] )
+	if (len(t[0].children)==3):
+		t[0].val=t[2] #operator
 
 def p_cast_exp(t):
 	'''cast_exp	: unary_exp

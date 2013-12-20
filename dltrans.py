@@ -14,7 +14,7 @@ def get_type( typename ):
 
 
 def translate_postfix_exp(node):
-	print "postfix_exp (len="+str(len(node.children))+"): "+str(node)
+	#print "postfix_exp (len="+str(len(node.children))+"): "+str(node)
 	if len(node.children)==1:
 		return translate(node.children[0]);
 	elif len(node.children)==4 and node.children[0]<>'$':
@@ -27,15 +27,30 @@ def translate_postfix_exp(node):
 		return tmp
 	elif len(node.children)==3:
 		#a->id
-		pass
-	elif len(node.children)==5:
+		return [];
+	elif len(node.children)==6:
 		#FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
-		pass
+		tmp = ["push(ebp)","mov(esp,ebp)"];
+		tmp.extend( translate_argument_exp_list( node.children[4] ) );
+		tmp.extend(["call("+node.children[2].val+")" ]);
+		tmp.extend([ "mov(ebp,esp)", "pop(ebp)" ])
+		tmp.extend([ "push(eax)" ])
+		return tmp
 	elif len(node.children)==4 and node.children[0]=='$':
 		#FUNCALL LBRACKET  ident  RBRACKET
-		print "gen_func_call"
 		return [node.children[2].val+"()","push(eax)"];
 	return [];
+
+def translate_argument_exp_list(node):
+	if type(node)==str: #fix ";"
+		return [];
+	elif node.type=='argument_exp_list':
+		tmp = [];
+		for i in range(len(node.children)-1,0,-1):
+			tmp=translate_argument_exp_list(node.children[i])+tmp #reverse order
+		return tmp;
+	else : #if node.type=='assignment_exp':
+		return translate( node )
 
 def translate_function_definition (node,context):
 	#print context
@@ -176,6 +191,7 @@ def translate_binary_exp( node ):
 	if ( len(node.children)!=3 ):
 		if ( isinstance( node ,Node ) ):
 			return translate(node.children[0])
+	print "binary_exp" + str(node)
 	#tmp = [ "movl "+node.children[0].rvalue()+", %eax" , \
 	#	"movl "+node.children[2].rvalue()+", %ebx" ];
 	tmp = [  ]; 
@@ -197,6 +213,40 @@ def translate_binary_exp( node ):
 		tmp.append("or(ebx, eax)");
 	elif node.val == '&&':
 		tmp.append("and (ebx, eax)");
+	elif node.val == '>':
+		print "comparison >!!!!!!!!!!!!"
+		tag=get_random_tag();
+		tmp.append("cmp(ebx,eax)");
+		tmp.append("jle "+tag);
+		tmp.append("test(1,1)");
+		tmp.append( tag +":" );
+	elif node.val == '>=':
+		tag=get_random_tag();
+		tmp.append("cmp(ebx,eax)");
+		tmp.append("jl "+tag);
+		tmp.append("test(1,1)");
+		tmp.append( tag +":" );		
+	elif node.val == '<':
+		tag=get_random_tag();
+		tmp.append("cmp(ebx,eax)");
+		tmp.append("jge "+tag);
+		tmp.append("test(1,1)");
+		tmp.append( tag +":" );	
+		
+	elif node.val == '<=':
+		tag=get_random_tag();
+		tmp.append("cmp(ebx,eax)");
+		tmp.append("jg "+tag);
+		tmp.append("test(1,1)");
+		tmp.append( tag +":" );	
+
+		
+	elif node.val == '==':
+		tag=get_random_tag();
+		tmp.append("cmp(ebx,eax)");
+		tmp.append("jne "+tag);
+		tmp.append("test(1,1)");
+		tmp.append( tag +":" );	
 	tmp.append("push (eax)");
 	return tmp
 
@@ -226,7 +276,7 @@ def translate_leftvalue( node ):
 		tmp.extend( ["add(ebx,eax)", "push(eax)"] )
 		return tmp;
 	else:
-		for i in len(node.children):
+		for i in range(len(node.children)):
 			if isinstance(node.children[i],Node):
 				return translate_leftvalue(node.children[i])
 		# here is 
@@ -243,7 +293,8 @@ def translate( node ):
 		tmp=translate(node.children[0]);
 		tmp.append("pop(eax)"); #clear last result
 		return tmp;
-	elif node.type=='mult_exp' or node.type=='additive_exp':
+	elif node.type=='mult_exp' or node.type=='additive_exp'\
+		or node.type=='relational_exp' or node.type=='logical_exp':
 		return translate_binary_exp( node );
 	elif  node.type=='assignment_exp':
 		return translate_assignment_exp( node );

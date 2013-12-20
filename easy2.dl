@@ -6,3 +6,30 @@ int left;
 int $[main]{
     $[main];
 }
+
+void $[ q_sort : int left, int right]{//quicksort
+	int pivot;
+	int l_hold;
+	int r_hold;
+	l_hold <- left;
+	r_hold <- right;
+	pivot <- numbers[left];
+	while (left < right) {
+		while ((numbers[right] >= pivot) && (left < right))
+			right <- right - 1;
+		if (left != right){
+			numbers[left] <- numbers[right];
+			left <- left + 1;
+		}
+		while ((numbers[left] <= pivot) && (left < right))
+			left <- left + 1;
+		if (left != right){
+			numbers[right] <- numbers[left];
+			right <- right - 1;
+		}
+	}
+	if (left < pivot)
+		$[ q_sort : left, pivot-1];
+	if (right > pivot)
+		$[ q_sort : pivot+1, right];
+}
