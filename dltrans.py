@@ -1,6 +1,8 @@
 codegen=1
 import sys
 from dlparse import Node
+import string
+import random
 
 global_vars = {};
 
@@ -17,10 +19,10 @@ def translate_postfix_exp(node):
 	elif len(node.children)==4:
 		# a [ id ]
 		tmp = [];
-		tmp.extend( translate_leftvalue( node.children[0] ) )
+		tmp.extend( translate( node.children[0] ) )
 		tmp.extend( translate( node.children[2] ) )
 		tmp.extend( [ "pop(ebx)", "pop(eax)" ] )
-		tmp.extend( ["add(ebx,eax)", "push((type int32)[eax])"] )
+		tmp.extend( ["add(ebx,eax)", "pushd([eax])"] )
 		return tmp
 	elif len(node.children)==3:
 		#a->id
@@ -126,32 +128,33 @@ def translate_decl( node ):
 
 def translate_iteration_stat( node ):
 	tmp = [] ;
-	if ( node.children[0]=='WHILE' ):
+	print "translate_iteration_stat"
+	if ( node.children[0]=='while' ):
 		rand_tag = get_random_tag();
-		tmp.append( node.children[2].codegen() ); #condition
+		tmp.extend( translate(node.children[2]) ); #condition
 		tmp.append( "je "+rand_tag );
-		tmp.append( node.children[4].codegen() );#to write
+		tmp.extend( translate(node.children[4]) );#to write
 		tmp.append( rand_tag+" :" );
 		#WHILE  LPAREN  exp  RPAREN  stat
-	elif ( node.children[0] == 'DO' ):
+	elif ( node.children[0] == 'do' ):
 		rand_tag = get_random_tag();
 		tmp.append( rand_tag+" :" );
-		tmp.append( node.children[4].codegen() );#to write
-		tmp.append( node.children[2].codegen() ); #condition
+		tmp.extend( translate(node.children[4]) );#to write
+		tmp.extend( translate(node.children[2]) ); #condition
 		tmp.append( "jne "+rand_tag );
 		#DO  stat  WHILE  LPAREN  exp  RPAREN  SEMI
 		pass
-	elif ( node.children[0] == 'FOR' ):
+	elif ( node.children[0] == 'for' ):
 		#FOR  LPAREN  exp SEMI  exp  SEMI exp  RPAREN  stat
 		rand_tag = get_random_tag();
-		tmp.append( node.children[2].codegen() );#to do
-		tmp.append( node.children[4].codegen() ); #test condition
+		tmp.extend( translate(node.children[2]) );#to do
+		tmp.extend( translate(node.children[4]) ); #test condition
 		tmp.append( "je "+rand_tag );
-		tmp.append( node.children[8].codegen() );#compound stat
-		tmp.append( node.children[6].codegen() );#to update var
+		tmp.append( translate(node.children[8]) );#compound stat
+		tmp.append( translate(node.children[6]) );#to update var
 		tmp.append( rand_tag+" :" );
 		pass
-	elif ( node.children[0] == 'FOREACH' ):
+	elif ( node.children[0] == 'foreach' ):
 		#FOREACH  LPAREN ident IN  exp  RPAREN  stat
 		pass
 	return tmp ;
@@ -176,7 +179,7 @@ def translate_binary_exp( node ):
 	tmp = [  ]; 
 	tmp.extend( translate(node.children[0]) )
 	tmp.extend( translate(node.children[2]) )
-	tmp.extend( [ "popl(ebx)" , "pop(eax)"  ] )
+	tmp.extend( [ "pop(ebx)" , "pop(eax)"  ] )
 	if  node.val == '+':
 		tmp.append("add(ebx, eax)");
 	elif node.val == '-':
@@ -202,8 +205,8 @@ def translate_assignment_exp( node ):
 	tmp = []; 
 	tmp.extend( translate_leftvalue(node.children[0]) )
 	tmp.extend( translate(node.children[2]) )
-	tmp.extend( [ "popl(ebx)","pop(eax)" ] )
-	tmp.append("mov ( ebx, (type int32)[eax] ) ");
+	tmp.extend( [ "pop(ebx)","pop(eax)" ] )
+	tmp.append("mov ( ebx, [eax] ) ");
 	tmp.append("push (eax)");
 	print "assignment_exp: ",tmp
 	return tmp
@@ -211,7 +214,7 @@ def translate_assignment_exp( node ):
 def translate_leftvalue( node ):
 	#print"translate_leftvalue: "+node.type
 	if node.type=='id':
-		return ["push( &"+node.val+")"]
+		return ["lea( eax,"+node.val+")","push(eax)"]
 	elif node.type=='postfix_exp'and len(node.children)==4:
 		tmp = [];
 		# id [ sub ] 
