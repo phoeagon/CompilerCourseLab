@@ -72,12 +72,15 @@ def general_check( node , context ):
 		node.val_type = 'void'
 	#
 	#recurse
-	for i in node.children:
-		walk( i , context );
+	if ( node.type=='compound_stat' or node.type=='function_definition'\
+		or node.type=='struct_spec' ):
+			pass
+	else:
+		for i in node.children:
+			walk( i , context );
 	#
 		#some node must prevent local variables propogate to parent nodes
 		# therefore we make a copy of the original mapping just in case.
-	else:
 		#
 		# Most nodes have this:
 		if ( len( node.children )== 1 and isinstance( node.children[0],Node ) ):
