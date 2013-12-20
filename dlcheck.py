@@ -73,7 +73,8 @@ def general_check( node , context ):
 	#
 	if ( node.type=='compound_stat' or node.type=='function_definition'\
 		or node.type=='struct_spec' ):
-		context_backup = copy.copy( context );
+			pass
+		#context_backup = copy.copy( context );
 		#some node must prevent local variables propogate to parent nodes
 		# therefore we make a copy of the original mapping just in case.
 	else:
@@ -87,7 +88,7 @@ def general_check( node , context ):
 				node.val_type = node.children[0].val_type ;
 		# Can be corrected later
 
-def check_function_definition( node , context , context_backup ):
+def check_function_definition( node , context ):
 	if ( node.type=='function_definition' ): #TODO
 		#type_spec  declarator  compound_stat
 		sub_context = copy.copy( context );
@@ -128,7 +129,7 @@ def check_direct_declarator( node , context ):
 		return True;
 	return False;
 		
-def check_struct_spec( node , context , context_backup ):
+def check_struct_spec( node , context  ):
 	if ( node.type=='struct_spec' ): #TODO
 			# struct id
 		walk( node.children[1] , context );
@@ -179,13 +180,16 @@ def check_postfix_expr( node , context ):
 
 def walk( node , context ):
 	if ( not isinstance( node , Node ) ):
-		return ; # '1', 'a' like literal nodes
-	general_check( node , context );
+		return ; # '1', 'a' like literal nodes	
+	if ( node.type=='compound_stat' or node.type=='function_definition'\
+		or node.type=='struct_spec' ):
+			context_backup = copy.copy(context)
+	general_check( node , context );	
 	#
 	# now check type for itself
-	if check_function_definition( node , context , context_backup ):
+	if check_function_definition( node , context  ):
 		return
-	elif check_struct_spec ( node , context , context_backup ):
+	elif check_struct_spec ( node , context  ):
 		return 
 	elif check_direct_declarator( node , context ):
 		return
@@ -331,7 +335,7 @@ if __name__ == "__main__":
     
 	from dlang import *
 	import dlang
-	#walk( obj , context )
+	walk( obj , context )
 	#debug_node( obj , context )
 	if outputFormat=="xml":
 		import gnosis.xml.pickle
