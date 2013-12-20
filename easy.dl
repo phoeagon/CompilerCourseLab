@@ -1,0 +1,7 @@
+int numbers[100];
+int left;
+
+int $[test: int numbers]{
+    int a;
+	a<- 1;
+}
