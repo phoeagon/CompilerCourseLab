@@ -5,3 +5,10 @@ int $[test: int numbers]{
     int a;
 	a<- 1;
 }
+void $[ q_sort : int numbers , int left, int right]{//quicksort
+	int pivot;
+	int l_hold;
+	int r_hold;
+	l_hold <- left;
+	r_hold <- right;
+}

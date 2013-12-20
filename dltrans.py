@@ -11,7 +11,7 @@ def get_type( typename ):
 		return 'ArrayType'
 
 def translate_function_definition (node,context):
-	print context
+	#print context
 	result=""
 	func_name = node.val
 	result="procedure "+func_name+"("
@@ -19,7 +19,7 @@ def translate_function_definition (node,context):
 	if tmp not in context:
 		print "fuck!!!!!"
 	tmp2 = context[ tmp ];
-	print tmp2
+	print "translate_func_def:"+str(tmp2)
 	if ( '@params-cnt' not in tmp2 or
 		'@params' not in tmp2 ): ##no arg needed
 		#epilog
@@ -32,11 +32,11 @@ def translate_function_definition (node,context):
 			result=result+" Var ";
 		else:
 			result=result+";";
-		print tmp2['@params']
+		#print tmp2['@params']
 		result += tmp2['@params']["@pt_"+str(i)]+":"+get_type(tmp2['@params'][i]);
 	#epilog
 	result+= ");@nodisplay;"
-	print result
+	print "function_definition: "+result
 	return result
 
 def get_var_list( node , context , context_backup ):
@@ -52,7 +52,7 @@ def get_var_list( node , context , context_backup ):
 					result = "var \n"
 				cnt=cnt+1;
 				result = result + " "+ele +":" + get_type(context[ele])+";\n";
-	print result;
+	print "get_var_list"+result;
 	return result ;
 
 
@@ -92,15 +92,15 @@ def translate_unary_exp( node ):
 	
 
 def translate_const( node ):
+	print "translate_const"
 	# test if is
 	tmp=[];
-	if ( node.val=='int' ):
-		tmp.append("push("+node.val+")");
+	if ( node.val_type=='int' ):
+		tmp.append("pushd("+node.val+")");
 	return tmp
 
 def translate_decl( node ):
-	#global
-	pass
+	return [""]
 
 def translate_iteration_stat( node ):
 	tmp = [] ;
@@ -137,23 +137,23 @@ def translate_iteration_stat( node ):
 def translate_compound( node ):
 	tmp = [];
 	for i in range(len(node.children)):
-		try:
-			print node.children[i].type
-		except:
-			print {}
 		tmp.extend( translate( node.children[i] ) )
-	print tmp
+	print "translate_compound:"+str(tmp)
 	return tmp
+
 
 def translate_rvalue_id( node ):
 	return ["push ("+node.val+")"];
 	
 def translate_binary_exp( node ):
+	if ( len(node.children)!=3 ):
+		if ( isinstance( node ,Node ) ):
+			return translate(node.children[0])
 	#tmp = [ "movl "+node.children[0].rvalue()+", %eax" , \
 	#	"movl "+node.children[2].rvalue()+", %ebx" ];
 	tmp = [  ]; 
-	translate(node.children[0]);
-	translate_rvalue_id(node.children[2]);
+	tmp.extend( translate(node.children[0]) )
+	tmp.extend( translate_rvalue_id(node.children[2]) )
 	tmp.extend( [ "pop(eax)" , "popl(ebx)" ] )
 	if  node.val == '+':
 		tmp.append("add(ebx, eax)");
@@ -179,7 +179,7 @@ def translate_assignment_exp( node ):
 			return translate(node.children[0])
 	tmp = []; 
 	tmp.extend( translate_leftvalue(node.children[0]) )
-	tmp.extend( translate_rvalue_id(node.children[2]) )
+	tmp.extend( translate(node.children[2]) )
 	tmp.extend( [ "pop(eax)" , "popl(ebx)" ] )
 	tmp.append("mov ( ebx, (type int32)[eax] ) ");
 	tmp.append("push (eax)");
@@ -200,6 +200,10 @@ def translate( node ):
 		return [];
 	if  node.type=='translation_unit' :
 		return translate_translation_unit( node );
+	elif node.type =="exp_stat":
+		tmp=translate(node.children[0]);
+		tmp.append("pop(eax)"); //clear last result
+		return tmp;
 	elif node.type=='mult_exp' or node.type=='additive_exp':
 		return translate_binary_exp( node );
 	elif  node.type=='assignment_exp':
@@ -210,6 +214,10 @@ def translate( node ):
 		return translate_iteration_stat( node );
 	elif node.type == 'id':
 		return translate_rvalue_id(node)
+	elif node.type == 'const':
+		return translate_const(node)
+	elif node.type == 'decl':
+		return [""]
 	#return []
 	#elif node.type=='stat':
 	else:
