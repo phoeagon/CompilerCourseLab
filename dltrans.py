@@ -35,20 +35,24 @@ def translate_function_definition \
 		result += tmp2['@params']["@pt_"+str(i)]+":"+get_type(tmp2['@params'][i]);
 	#epilog
 	result+= ");@nodisplay;"
-	print "Procedure: ",result
+	print result
 	return result
 
 def get_var_list( node , context , context_backup ):
+	#print "get_var_list"
 	result=""
 	func_name = node.val
 	cnt = 0
-	for ( ele in context )
-		if ( type(context[ele])=='str' ):
+	for ele in context:
+		if ( type(context[ele])==str ):
 			if ( (ele not in context_backup ) or ( context[ele]!=context_backup[ele]) ):
 				# now a hit
 				if cnt==0 :
 					result = "var \n"
 				cnt=cnt+1;
-				result = result + "" +":" + "\n";
-	
-	
+				result = result + " "+ele +":" + get_type(context[ele])+";\n";
+	print result;
+	return result ;
+
+
+def 
