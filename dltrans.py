@@ -14,9 +14,10 @@ def get_type( typename ):
 
 
 def translate_postfix_exp(node):
+	print "postfix_exp (len="+str(len(node.children))+"): "+str(node)
 	if len(node.children)==1:
 		return translate(node.children[0]);
-	elif len(node.children)==4:
+	elif len(node.children)==4 and node.children[0]<>'$':
 		# a [ id ]
 		tmp = [];
 		tmp.extend( translate( node.children[0] ) )
@@ -30,9 +31,10 @@ def translate_postfix_exp(node):
 	elif len(node.children)==5:
 		#FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
 		pass
-	elif len(node.children)==4:
+	elif len(node.children)==4 and node.children[0]=='$':
 		#FUNCALL LBRACKET  ident  RBRACKET
-		pass
+		print "gen_func_call"
+		return [node.children[2].val+"()","push(eax)"];
 	return [];
 
 def translate_function_definition (node,context):
