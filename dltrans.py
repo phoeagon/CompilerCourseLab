@@ -1,5 +1,6 @@
 codegen=1
 import sys
+from dlparse import Node
 
 global_vars = {};
 
@@ -9,8 +10,7 @@ def get_type( typename ):
 	elif typename == 'arr':
 		return 'ArrayType'
 
-def translate_function_definition \
-		(node,context):
+def translate_function_definition (node,context):
 	print context
 	result=""
 	func_name = node.val
@@ -57,17 +57,17 @@ def get_var_list( node , context , context_backup ):
 
 
 def add_translation_method( node ):
-	if ( node.type == 'translation_unit' )
+	if ( node.type == 'translation_unit' ):
 		node.translation = translate_translation_unit;
-	elif ( node.type == 'function_definition' )
+	elif ( node.type == 'function_definition' ):
 		node.translation = translate_function_definition;
-	elif ( node.type == 'compound_stat' )
+	elif ( node.type == 'compound_stat' ):
 		node.translation = translate_compound;
-	elif ( node.type == 'unary_ext' )
+	elif ( node.type == 'unary_ext' ):
 		node.translation = translate_unary_exp;
 	#elif ( node.type == 'function_definition' )
 	#	node.translation = translate_function_definition;
-	for chd in node.children
+	for chd in node.children:
 		add_translation_method( node.children[chd] )
 
 def get_random_tag(prefix="tag",size=6):
@@ -85,48 +85,49 @@ def get_rvalue( node ):
 
 def translate_unary_exp( node ):
 	tmp = [ "pop(eax)" ];
-	if ( node.value=='-' )
-		tmp.push("neg(eax)");
-	tmp.push( "push(eax)" );
+	if ( node.value=='-' ):
+		tmp.append("neg(eax)");
+	tmp.append( "push(eax)" );
 	return tmp 
 	
-def translate_function_definition( node ):
-
-	return tmp ;
 
 def translate_const( node ):
 	# test if is
-	pass
+	tmp=[];
+	if ( node.val=='int' ):
+		tmp.append("push("+node.val+")");
+	return tmp
 
 def translate_decl( node ):
 	#global
+	pass
 
-def p_iteration_stat( node ):
+def translate_iteration_stat( node ):
 	tmp = [] ;
 	if ( node.children[0]=='WHILE' ):
 		rand_tag = get_random_tag();
-		tmp.push( node.children[2].codegen() ); #condition
-		tmp.push( "je "+rand_tag );
-		tmp.push( node.children[4].codegen() );#to write
-		tmp.push( rand_tag+" :" );
+		tmp.append( node.children[2].codegen() ); #condition
+		tmp.append( "je "+rand_tag );
+		tmp.append( node.children[4].codegen() );#to write
+		tmp.append( rand_tag+" :" );
 		#WHILE  LPAREN  exp  RPAREN  stat
 	elif ( node.children[0] == 'DO' ):
 		rand_tag = get_random_tag();
-		tmp.push( rand_tag+" :" );
-		tmp.push( node.children[4].codegen() );#to write
-		tmp.push( node.children[2].codegen() ); #condition
-		tmp.push( "jne "+rand_tag );
+		tmp.append( rand_tag+" :" );
+		tmp.append( node.children[4].codegen() );#to write
+		tmp.append( node.children[2].codegen() ); #condition
+		tmp.append( "jne "+rand_tag );
 		#DO  stat  WHILE  LPAREN  exp  RPAREN  SEMI
 		pass
 	elif ( node.children[0] == 'FOR' ):
 		#FOR  LPAREN  exp SEMI  exp  SEMI exp  RPAREN  stat
 		rand_tag = get_random_tag();
-		tmp.push( node.children[2].codegen() );#to do
-		tmp.push( node.children[4].codegen() ); #test condition
-		tmp.push( "je "+rand_tag );
-		tmp.push( node.children[8].codegen() );#compound stat
-		tmp.push( node.children[6].codegen() );#to update var
-		tmp.push( rand_tag+" :" );
+		tmp.append( node.children[2].codegen() );#to do
+		tmp.append( node.children[4].codegen() ); #test condition
+		tmp.append( "je "+rand_tag );
+		tmp.append( node.children[8].codegen() );#compound stat
+		tmp.append( node.children[6].codegen() );#to update var
+		tmp.append( rand_tag+" :" );
 		pass
 	elif ( node.children[0] == 'FOREACH' ):
 		#FOREACH  LPAREN ident IN  exp  RPAREN  stat
@@ -134,28 +135,86 @@ def p_iteration_stat( node ):
 	return tmp ;
 
 def translate_compound( node ):
-	pass
+	tmp = [];
+	for i in range(len(node.children)):
+		try:
+			print node.children[i].type
+		except:
+			print {}
+		tmp.extend( translate( node.children[i] ) )
+	print tmp
+	return tmp
+
+def translate_rvalue_id( node ):
+	return ["push ("+node.val+")"];
 	
 def translate_binary_exp( node ):
 	#tmp = [ "movl "+node.children[0].rvalue()+", %eax" , \
 	#	"movl "+node.children[2].rvalue()+", %ebx" ];
-	tmp = [ "pop(eax)" , "popl(ebx)" ]; 
-	if  node.value == '+':
-		tmp.push("add(ebx, eax)");
-	elif node.value == '-':
-		tmp.push("sub(ebx, eax)");
-	elif node.value == '*':
-		tmp.push("imul(ebx, eax)");
-	elif node.value == '/':
-		tmp.push("push(edx)")
-		tmp.push("xor (edx,edx)")
-		tmp.push("idiv(ebx)")
-		tmp.push("pop(edx)")
-	elif node.value == '||':
-		tmp.push("or(ebx, eax)");
-	elif node.value == '&&':
-		tmp.push("and (ebx, eax)");
-	elif node.value == '<-':
-		tmp.push("mov ( ebx, (type int32)[eax] ) ");
-	tmp.push("push (eax)");
+	tmp = [  ]; 
+	translate(node.children[0]);
+	translate_rvalue_id(node.children[2]);
+	tmp.extend( [ "pop(eax)" , "popl(ebx)" ] )
+	if  node.val == '+':
+		tmp.append("add(ebx, eax)");
+	elif node.val == '-':
+		tmp.append("sub(ebx, eax)");
+	elif node.val == '*':
+		tmp.append("imul(ebx, eax)");
+	elif node.val == '/':
+		tmp.append("extend(edx)")
+		tmp.append("xor (edx,edx)")
+		tmp.append("idiv(ebx)")
+		tmp.append("pop(edx)")
+	elif node.val == '||':
+		tmp.append("or(ebx, eax)");
+	elif node.val == '&&':
+		tmp.append("and (ebx, eax)");
+	tmp.append("push (eax)");
 	return tmp
+
+def translate_assignment_exp( node ):
+	if ( len(node.children)!=3 ):
+		if ( isinstance( node ,Node ) ):
+			return translate(node.children[0])
+	tmp = []; 
+	tmp.extend( translate_leftvalue(node.children[0]) )
+	tmp.extend( translate_rvalue_id(node.children[2]) )
+	tmp.extend( [ "pop(eax)" , "popl(ebx)" ] )
+	tmp.append("mov ( ebx, (type int32)[eax] ) ");
+	tmp.append("push (eax)");
+	print "assignment_exp: ",tmp
+	return tmp
+	
+def translate_leftvalue( node ):
+	#print"translate_leftvalue: "+node.type
+	if node.type=='id':
+		return ["push( &"+node.val+")"]
+	else:
+		return [""]
+		# here is 
+
+def translate( node ):
+	#print node
+	if ( not isinstance(node,Node) ):
+		return [];
+	if  node.type=='translation_unit' :
+		return translate_translation_unit( node );
+	elif node.type=='mult_exp' or node.type=='additive_exp':
+		return translate_binary_exp( node );
+	elif  node.type=='assignment_exp':
+		return translate_assignment_exp( node );
+	elif node.type=='compound_stat':
+		return translate_compound( node );
+	elif node.type=='iteration_stat':
+		return translate_iteration_stat( node );
+	elif node.type == 'id':
+		return translate_rvalue_id(node)
+	#return []
+	#elif node.type=='stat':
+	else:
+		result = []
+		if isinstance( node , Node ):
+			for i in range(len(node.children)) :
+				result.extend( translate( node.children[i] ) )
+		return result

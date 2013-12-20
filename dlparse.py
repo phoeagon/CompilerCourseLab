@@ -307,6 +307,7 @@ def p_argument_exp_list(t):
 def p_const_1(t):
 	'''const		: ICONST'''
 	t[0]=Node("const","int",[ t[1] ])
+	t[0].val=t[1]
 
 def p_const_2(t):
 	'''const		: CCONST'''

@@ -107,6 +107,7 @@ def check_function_definition( node , context ):
 			print "translate_function_definition"
 			translate_function_definition( node , context )
 			get_var_list( node , sub_context , context );
+			translate_compound( node.children[2]  );
 		return True;
 	return False;
 
