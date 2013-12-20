@@ -71,23 +71,20 @@ def general_check( node , context ):
 	if ( node.val_type==''):
 		node.val_type = 'void'
 	#
-	if ( node.type=='compound_stat' or node.type=='function_definition'\
-		or node.type=='struct_spec' ):
-		context_backup = copy.copy( context );
+	#recurse
+	for i in node.children:
+		walk( i , context );
+	#
 		#some node must prevent local variables propogate to parent nodes
 		# therefore we make a copy of the original mapping just in case.
 	else:
-		#
-		#recurse
-		for i in node.children:
-			walk( i , context );
 		#
 		# Most nodes have this:
 		if ( len( node.children )== 1 and isinstance( node.children[0],Node ) ):
 				node.val_type = node.children[0].val_type ;
 		# Can be corrected later
 
-def check_function_definition( node , context , context_backup ):
+def check_function_definition( node , context ):
 	if ( node.type=='function_definition' ): #TODO
 		#type_spec  declarator  compound_stat
 		sub_context = copy.copy( context );
@@ -103,6 +100,9 @@ def check_function_definition( node , context , context_backup ):
 		sub_context[ '@_func_'+node.val ] = sub_context ; # throw out param list
 		# compound
 		walk( node.children[2] , sub_context );
+		if codegen:
+			print "translate_function_definition"
+			translate_function_definition( node , context  )
 		return True;
 	return False;
 
@@ -128,7 +128,7 @@ def check_direct_declarator( node , context ):
 		return True;
 	return False;
 		
-def check_struct_spec( node , context , context_backup ):
+def check_struct_spec( node , context ):
 	if ( node.type=='struct_spec' ): #TODO
 			# struct id
 		walk( node.children[1] , context );
@@ -181,11 +181,14 @@ def walk( node , context ):
 	if ( not isinstance( node , Node ) ):
 		return ; # '1', 'a' like literal nodes
 	general_check( node , context );
+	if ( node.type=='compound_stat' or node.type=='function_definition'\
+		or node.type=='struct_spec' ):
+		context_backup = copy.copy( context );
 	#
 	# now check type for itself
-	if check_function_definition( node , context , context_backup ):
+	if check_function_definition( node , context  ):
 		return
-	elif check_struct_spec ( node , context , context_backup ):
+	elif check_struct_spec ( node , context ):
 		return 
 	elif check_direct_declarator( node , context ):
 		return
@@ -321,6 +324,11 @@ def walk( node , context ):
 		if ( len( node.children ) > 1 ):
 			node.val_type = node.children[1].val_type ;
 
+
+codegen=0
+from dltrans import *
+
+
 if __name__ == "__main__":
 	outputFormat = 'json'
 	for arg in sys.argv:
@@ -331,7 +339,7 @@ if __name__ == "__main__":
     
 	from dlang import *
 	import dlang
-	#walk( obj , context )
+	walk( obj , context )
 	#debug_node( obj , context )
 	if outputFormat=="xml":
 		import gnosis.xml.pickle

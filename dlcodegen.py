@@ -1,9 +1,26 @@
 import string
 import random
 
+def add_translation_method( node ):
+	if ( node.type == 'translation_unit' )
+		node.translation = translate_translation_unit;
+	elif ( node.type == 'function_definition' )
+		node.translation = translate_function_definition;
+	elif ( node.type == 'compound_stat' )
+		node.translation = translate_compound;
+	elif ( node.type == 'unary_ext' )
+		node.translation = translate_unary_exp;
+	#elif ( node.type == 'function_definition' )
+	#	node.translation = translate_function_definition;
+	for chd in node.children
+		add_translation_method( node.children[chd] )
+
 def get_random_tag(prefix="tag",size=6):
 	chars=string.ascii_uppercase + string.digits
 	return prefix.join(random.choice(chars) for x in range(size))
+
+def translate_translation_unit( node ):
+	pass
 
 def get_lvalue( node ):
 	return ""
@@ -12,20 +29,22 @@ def get_rvalue( node ):
 	return ""
 
 def translate_unary_exp( node ):
-	tmp = [ "pop %eax" ];
+	tmp = [ "pop(eax)" ];
 	if ( node.value=='-' )
-		tmp.push("neg %eax");
-	tmp.push( "push %eax" );
+		tmp.push("neg(eax)");
+	tmp.push( "push(eax)" );
 	return tmp 
 	
 def translate_function_definition( node ):
-	tmp = [ "push %ebp" , "mov %esp, %ebp"];
 
 	return tmp ;
 
 def translate_const( node ):
 	# test if is
 	pass
+
+def translate_decl( node ):
+	
 
 def p_iteration_stat( node ):
 	tmp = [] ;
@@ -60,7 +79,8 @@ def p_iteration_stat( node ):
 	return tmp ;
 
 def translate_compound( node ):
-
+	pass
+	
 def translate_binary_exp( node ):
 	#tmp = [ "movl "+node.children[0].rvalue()+", %eax" , \
 	#	"movl "+node.children[2].rvalue()+", %ebx" ];
