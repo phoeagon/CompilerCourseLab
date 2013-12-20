@@ -61,7 +61,7 @@ def translate_function_definition (node,context):
 	if tmp not in context:
 		print "fuck!!!!!"
 	tmp2 = context[ tmp ];
-	print "translate_func_def:"+str(tmp2)
+	#print "translate_func_def:"+str(tmp2)
 	if ( '@params-cnt' not in tmp2 or
 		'@params' not in tmp2 ): ##no arg needed
 		#epilog
@@ -131,7 +131,7 @@ def translate_unary_exp( node ):
 	
 
 def translate_const( node ):
-	print "translate_const"
+	#print "translate_const"
 	# test if is
 	tmp=[];
 	if ( node.val_type=='int' ):
@@ -143,9 +143,28 @@ def translate_const( node ):
 def translate_decl( node ):
 	return [""]
 
+def translate_selection_stat( node ):
+	tmp = [] ;
+	#IF  LPAREN  exp  RPAREN  stat
+	#IF  LPAREN  exp  RPAREN  stat ELSE  stat
+	if len(node.children)==5:
+		rand_tag = get_random_tag();
+		tmp.extend( translate(node.children[2]) ); #condition
+		tmp.append( "je "+rand_tag );
+		tmp.extend( translate(node.children[4]) );#to write
+		tmp.append( rand_tag+" :" );
+	elif len(node.children)==7:
+		rand_tag = get_random_tag();
+		tmp.extend( translate(node.children[2]) ); #condition
+		tmp.append( "je "+rand_tag );
+		tmp.extend( translate(node.children[4]) );#to write
+		tmp.append( rand_tag+" :" );
+		tmp.extend( translate(node.children[6]) );#to write
+	return tmp
+
 def translate_iteration_stat( node ):
 	tmp = [] ;
-	print "translate_iteration_stat"
+	#print "translate_iteration_stat"
 	if ( node.children[0]=='while' ):
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) ); #condition

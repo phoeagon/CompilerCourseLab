@@ -9,7 +9,7 @@ void $[ q_sort : int numbers , int left, int right]{//quicksort
 	int pivot;
 	r_hold <- right;
     numbers[1]<-2;
-    while(pivot>0)
+    if(pivot>0)
         pivot<-0;
 }
 
