@@ -1,0 +1,35 @@
+program t;
+procedure q_sort( Var left:int32;right:int32);@nodisplay;
+Var
+ l_hold:int32;
+ right:int32;
+ r_hold:int32;
+ pivot:int32;
+begin q_sort;
+    push( &l_hold)
+    push (left)
+    popl(ebx)
+    pop(eax)
+    mov ( ebx, (type int32)[eax] ) 
+    push (eax)
+    pop(eax)
+    push( &r_hold)
+    push (right)
+    popl(ebx)
+    pop(eax)
+    mov ( ebx, (type int32)[eax] ) 
+    push (eax)
+    pop(eax)
+    push( &pivot)
+    push( &numbers)
+    push (left)
+    pop(ebx)
+    pop(eax)
+    add(ebx,eax)
+    push((type int32)[eax])
+    popl(ebx)
+    pop(eax)
+    mov ( ebx, (type int32)[eax] ) 
+    push (eax)
+    pop(eax)
+end q_sort;

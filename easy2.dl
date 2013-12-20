@@ -1,0 +1,15 @@
+int numbers[100];
+/* this is an implementation of 
+ * quicksort
+ **/
+int left;
+
+
+void $[ q_sort : int left, int right]{//quicksort
+	int pivot;
+	int l_hold;
+	int r_hold;
+	l_hold <- left;
+	r_hold <- right;
+	pivot <- numbers[left];
+}

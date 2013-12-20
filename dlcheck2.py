@@ -16,6 +16,7 @@ rng= {'char':1 , 'int':2 , 'float':3 }
 
 debug = 1;
 
+
 def debug_node( node , context ):
 	if ( debug ):
 		print  node .__str__()
@@ -105,7 +106,9 @@ def check_function_definition( node , context ):
 		walk( node.children[2] , sub_context );
 		if codegen:
 			print "translate_function_definition"
-			translate_function_definition( node , context  )
+			translate_function_definition( node , context )
+			get_var_list( node , sub_context , context );
+			translate_compound( node.children[2]  );
 		return True;
 	return False;
 
@@ -179,6 +182,8 @@ def check_postfix_expr( node , context ):
 			node.val_type = node.children[0].val_type;
 		return True;
 	return False;
+
+
 
 def walk( node , context ):
 	if ( not isinstance( node , Node ) ):
@@ -328,7 +333,9 @@ def walk( node , context ):
 		if ( len( node.children ) > 1 ):
 			node.val_type = node.children[1].val_type ;
 
+
 codegen=0
+from dltrans import *
 
 
 
@@ -343,6 +350,8 @@ if __name__ == "__main__":
 	from dlang import *
 	import dlang
 	walk( obj , context )
+	exit(0)
+	
 	#debug_node( obj , context )
 	if outputFormat=="xml":
 		import gnosis.xml.pickle

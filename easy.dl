@@ -11,4 +11,5 @@ void $[ q_sort : int numbers , int left, int right]{//quicksort
 	int r_hold;
 	l_hold <- left;
 	r_hold <- right;
+    numbers[1]<-2;
 }

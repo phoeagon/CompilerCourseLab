@@ -10,6 +10,29 @@ def get_type( typename ):
 	elif typename == 'arr':
 		return 'ArrayType'
 
+
+def translate_postfix_exp(node):
+	if len(node.children)==1:
+		return translate(node.children[0]);
+	elif len(node.children)==4:
+		# a [ id ]
+		tmp = [];
+		tmp.extend( translate_leftvalue( node.children[0] ) )
+		tmp.extend( translate( node.children[2] ) )
+		tmp.extend( [ "pop(ebx)", "pop(eax)" ] )
+		tmp.extend( ["add(ebx,eax)", "push((type int32)[eax])"] )
+		return tmp
+	elif len(node.children)==3:
+		#a->id
+		pass
+	elif len(node.children)==5:
+		#FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
+		pass
+	elif len(node.children)==4:
+		#FUNCALL LBRACKET  ident  RBRACKET
+		pass
+	return [];
+
 def translate_function_definition (node,context):
 	#print context
 	result=""
@@ -77,16 +100,13 @@ def get_random_tag(prefix="tag",size=6):
 def translate_translation_unit( node ):
 	pass
 
-def get_lvalue( node ):
-	return ""
-
-def get_rvalue( node ):
-	return ""
 
 def translate_unary_exp( node ):
 	tmp = [ "pop(eax)" ];
 	if ( node.value=='-' ):
 		tmp.append("neg(eax)");
+	elif node.value=='+':
+		pass
 	tmp.append( "push(eax)" );
 	return tmp 
 	
@@ -155,8 +175,8 @@ def translate_binary_exp( node ):
 	#	"movl "+node.children[2].rvalue()+", %ebx" ];
 	tmp = [  ]; 
 	tmp.extend( translate(node.children[0]) )
-	tmp.extend( translate_rvalue_id(node.children[2]) )
-	tmp.extend( [ "pop(eax)" , "popl(ebx)" ] )
+	tmp.extend( translate(node.children[2]) )
+	tmp.extend( [ "popl(ebx)" , "pop(eax)"  ] )
 	if  node.val == '+':
 		tmp.append("add(ebx, eax)");
 	elif node.val == '-':
@@ -182,7 +202,7 @@ def translate_assignment_exp( node ):
 	tmp = []; 
 	tmp.extend( translate_leftvalue(node.children[0]) )
 	tmp.extend( translate(node.children[2]) )
-	tmp.extend( [ "pop(eax)" , "popl(ebx)" ] )
+	tmp.extend( [ "popl(ebx)","pop(eax)" ] )
 	tmp.append("mov ( ebx, (type int32)[eax] ) ");
 	tmp.append("push (eax)");
 	print "assignment_exp: ",tmp
@@ -192,8 +212,18 @@ def translate_leftvalue( node ):
 	#print"translate_leftvalue: "+node.type
 	if node.type=='id':
 		return ["push( &"+node.val+")"]
+	elif node.type=='postfix_exp'and len(node.children)==4:
+		tmp = [];
+		# id [ sub ] 
+		tmp.extend( translate_leftvalue( node.children[0] ) )
+		tmp.extend( translate( node.children[2] ) )
+		tmp.extend( [ "pop(ebx)", "pop(eax)" ] )
+		tmp.extend( ["add(ebx,eax)", "push(eax)"] )
+		return tmp;
 	else:
-		return [""]
+		for i in len(node.children):
+			if isinstance(node.children[i],Node):
+				return translate_leftvalue(node.children[i])
 		# here is 
 
 def translate( node ):
@@ -202,6 +232,8 @@ def translate( node ):
 		return [];
 	if  node.type=='translation_unit' :
 		return translate_translation_unit( node );
+	elif node.type=='postfix_exp':
+		return translate_postfix_exp(node);
 	elif node.type =="exp_stat":
 		tmp=translate(node.children[0]);
 		tmp.append("pop(eax)"); #clear last result
