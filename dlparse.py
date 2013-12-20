@@ -312,10 +312,12 @@ def p_const_1(t):
 def p_const_2(t):
 	'''const		: CCONST'''
 	t[0]=Node("const","char",[ t[1] ])
+	t[0].val=t[1]
 
 def p_const_3(t):
 	'''const		:  FCONST'''
 	t[0]=Node("const","float",[ t[1] ])
+	t[0].val=t[1]
 
 def p_const_4(t):
 	'''const		:  SCONST'''

@@ -97,6 +97,8 @@ def translate_const( node ):
 	tmp=[];
 	if ( node.val_type=='int' ):
 		tmp.append("pushd("+node.val+")");
+	elif ( node.val_type=='float'):
+		tmp.append("pushf("+node.val+")");
 	return tmp
 
 def translate_decl( node ):
@@ -202,7 +204,7 @@ def translate( node ):
 		return translate_translation_unit( node );
 	elif node.type =="exp_stat":
 		tmp=translate(node.children[0]);
-		tmp.append("pop(eax)"); //clear last result
+		tmp.append("pop(eax)"); #clear last result
 		return tmp;
 	elif node.type=='mult_exp' or node.type=='additive_exp':
 		return translate_binary_exp( node );
