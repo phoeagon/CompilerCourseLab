@@ -111,3 +111,7 @@ def translate( node ):
 	elif node.type == "additive_exp":
 		return translate_binary_exp( node );
 	return ""
+
+def proghead( node ):
+	result="program prog;"
+	return tag;
