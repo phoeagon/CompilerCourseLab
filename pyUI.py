@@ -306,6 +306,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	def showSymbolTable(self):
 		self.useTree()
 		os.system("python dlcontext.py < "+ self.fileName + "| tail -n +3 > symTab.json")
+		str = ""
 		try:
 			with open("symTab.json", 'r') as f:
 				str = f.read()
@@ -348,7 +349,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			return
 			
 		fileName = "symTab.xml"
-		if True:
+		if False:
 			f = QtCore.QFile(fileName)
 			if f.open(QtCore.QIODevice.ReadOnly):
 				document = QtXml.QDomDocument()
@@ -358,6 +359,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 					self.model = newModel
 					self.xmlPath = fileName
 				f.close()
+		self.useConsole()
+		self.consoleField.setPlainText(str)
 		pass
 	def codeGen(self):
 		pass
