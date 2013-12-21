@@ -213,6 +213,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.codeFrame = None
 		self.grammarButt.setEnabled(False)
 		self.semanticButt.setEnabled(False)
+		self.symbolTable.setEnabled(False)
 		self.codeGenButt.setEnabled(False)
 		self.lexButt.setEnabled(False)
 	def useConsole(self):
@@ -298,8 +299,65 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				f.close()
 		#os.system("rm tmp.xml")
 		self.semanticButt.setEnabled(True)
+		self.symbolTable.setEnabled(True)
 	def semanticCheck(self):
 		self.codeGenButt.setEnabled(True)
+		pass
+	def showSymbolTable(self):
+		self.useTree()
+		os.system("python dlcontext.py < "+ self.fileName + "| tail -n +3 > symTab.json")
+		try:
+			with open("symTab.json", 'r') as f:
+				str = f.read()
+				str = str.replace("'", '"')
+				str = str.replace("@", "")
+				str = str.replace("{...}", '""')
+				
+				#very tricky code dealing with params
+				#not work if more than 6 params
+				str = str.replace("0:", '"num#0":')
+				str = str.replace("1:", '"num#1":')
+				str = str.replace("2:", '"num#2":')
+				str = str.replace("3:", '"num#3":')
+				str = str.replace("4:", '"num#4":')
+				str = str.replace("5:", '"num#5":')
+
+				#yet some other tricky codes
+				str = str.replace("0,", '"0",')
+				str = str.replace("1,", '"1",')
+				str = str.replace("2,", '"2",')
+				str = str.replace("3,", '"3",')
+				str = str.replace("4,", '"4",')
+				str = str.replace("5,", '"5",')
+				
+				str = str.replace(":", ":\n")
+				str = str.replace(",", ",\n")
+				print str
+				j = json.loads(str)
+				text_file = open("symTab.xml", "w")
+				text_file.write(json2xml(j))
+				text_file.close()
+		except Exception as e:
+			print e
+			msgBox = QMessageBox()
+			msgBox.setText("Syntax Error.")
+			msgBox.exec_()
+			self.useConsole()
+			with open("symTab.json", 'r') as f:
+				self.consoleField.setPlainText( f.read() )
+			return
+			
+		fileName = "symTab.xml"
+		if True:
+			f = QtCore.QFile(fileName)
+			if f.open(QtCore.QIODevice.ReadOnly):
+				document = QtXml.QDomDocument()
+				if document.setContent(f):
+					newModel = DomModel(document, self)
+					self.treeView.setModel(newModel)
+					self.model = newModel
+					self.xmlPath = fileName
+				f.close()
 		pass
 	def codeGen(self):
 		pass
