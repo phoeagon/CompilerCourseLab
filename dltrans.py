@@ -4,6 +4,9 @@ from dlparse import Node
 import string
 import random
 
+procedure_code = [];
+global_code = [];
+
 global_vars = {};
 
 def get_type( typename ):
@@ -11,6 +14,8 @@ def get_type( typename ):
 		return 'int32'
 	elif typename == 'arr':
 		return 'ArrayType'
+	else:
+		return typename;
 
 
 def translate_postfix_exp(node):
@@ -86,15 +91,22 @@ def get_var_list( node , context , context_backup ):
 	result=""
 	func_name = node.val
 	cnt = 0
+	exclude = [];
+	if '@params' in context:
+		for ele in context['@params']:
+			exclude.append( context['@params'][ele] )
+	#print "exclude:",exclude
 	for ele in context:
 		if ( type(context[ele])==str ):
+			if ele in exclude:
+				continue
 			if ( (ele not in context_backup ) or ( context[ele]!=context_backup[ele]) ):
 				# now a hit
 				if cnt==0 :
 					result = "var \n"
 				cnt=cnt+1;
 				result = result + " "+ele +":" + get_type(context[ele])+";\n";
-	print "get_var_list"+result;
+	#print "get_var_list"+result;
 	return result ;
 
 
@@ -357,6 +369,39 @@ def output_procedure( prototype , var , body , procedure_name ):
 	tmp.extend( output_procedure_body(body) );
 	tmp.append( "end "+procedure_name+";" );
 
-	for i in tmp:
-		print i
+	#for i in tmp:
+	#	print i
+
+	
+	global procedure_code
+	procedure_code.extend( tmp );
 	return tmp ;
+
+def translate_static( context ):
+	tmp = [];
+	cnt = 0 ;
+	for ele in context:
+		if ele[0]=='@' or ele in ('int','float','char'):
+			continue;
+		if ('@_func_'+ele) in context:
+			continue;
+		if cnt == 0 :
+			tmp.append("static");
+		cnt = cnt+1;
+		tmp.append( "\t"+ele +":"+ get_type(context[ele]) + ";");
+
+	#for i in tmp:
+	#	print i
+	global global_code
+	global_code.extend( tmp );
+	return tmp ;
+
+def translate_everything():
+	print "program prog;"
+	for line in global_code:
+		print line
+	for line in procedure_code:
+		print line
+	print "begin prog;"
+	print "\t call(main);"
+	print "end prog;"

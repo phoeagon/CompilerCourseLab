@@ -105,7 +105,7 @@ def check_function_definition( node , context ):
 		# compound
 		walk( node.children[2] , sub_context );
 		if codegen:
-			print "translate_function_definition"
+			#print "translate_function_definition"
 			output_procedure ( \
 				translate_function_definition( node , context ) , \
 				get_var_list( node , sub_context , context ) , \
@@ -353,6 +353,8 @@ if __name__ == "__main__":
 	from dlang import *
 	import dlang
 	walk( obj , context )
+	translate_static( context )
+	translate_everything()
 	exit(0)
 	
 	#debug_node( obj , context )
