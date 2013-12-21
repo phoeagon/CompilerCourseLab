@@ -106,9 +106,12 @@ def check_function_definition( node , context ):
 		walk( node.children[2] , sub_context );
 		if codegen:
 			print "translate_function_definition"
-			translate_function_definition( node , context )
-			get_var_list( node , sub_context , context );
-			translate_compound( node.children[2]  );
+			output_procedure ( \
+				translate_function_definition( node , context ) , \
+				get_var_list( node , sub_context , context ) , \
+				translate_compound( node.children[2]  ),  \
+				node.val
+				);
 		return True;
 	return False;
 

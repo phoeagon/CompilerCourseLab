@@ -66,7 +66,7 @@ def translate_function_definition (node,context):
 		'@params' not in tmp2 ): ##no arg needed
 		#epilog
 		result+= ");@nodisplay;"
-		print "Procedure: ",result
+		#print "Procedure: ",result
 		return result
 	param_cnt = tmp2[ '@params-cnt' ]
 	for i in range(param_cnt):
@@ -78,7 +78,7 @@ def translate_function_definition (node,context):
 		result += tmp2['@params']["@pt_"+str(i)]+":"+get_type(tmp2['@params'][i]);
 	#epilog
 	result+= ");@nodisplay;"
-	print "function_definition: "+result
+	#print "function_definition: "+result
 	return result
 
 def get_var_list( node , context , context_backup ):
@@ -199,7 +199,7 @@ def translate_compound( node ):
 	tmp = [];
 	for i in range(len(node.children)):
 		tmp.extend( translate( node.children[i] ) )
-	print "translate_compound:"+str(tmp)
+	#print "translate_compound:"+str(tmp)
 	return tmp
 
 
@@ -210,7 +210,7 @@ def translate_binary_exp( node ):
 	if ( len(node.children)!=3 ):
 		if ( isinstance( node ,Node ) ):
 			return translate(node.children[0])
-	print "binary_exp" + str(node)
+	#print "binary_exp" + str(node)
 	#tmp = [ "movl "+node.children[0].rvalue()+", %eax" , \
 	#	"movl "+node.children[2].rvalue()+", %ebx" ];
 	tmp = [  ]; 
@@ -279,7 +279,7 @@ def translate_assignment_exp( node ):
 	tmp.extend( [ "pop(ebx)","pop(eax)" ] )
 	tmp.append("mov ( ebx, [eax] ) ");
 	tmp.append("push (eax)");
-	print "assignment_exp: ",tmp
+	#print "assignment_exp: ",tmp
 	return tmp
 	
 def translate_leftvalue( node ):
@@ -335,3 +335,27 @@ def translate( node ):
 			for i in range(len(node.children)) :
 				result.extend( translate( node.children[i] ) )
 		return result
+
+def output_procedure_body( code ):
+	result = [] ;
+	for line in code:
+		if len(line)==0:
+			continue
+		if line[-1]==';':
+			result.append( "\t"+line );
+		else:
+			result.append( "\t"+line+';');
+	#print result ;
+	return result;
+
+def output_procedure( prototype , var , body , procedure_name ):
+	tmp = [];
+	tmp.append( prototype ) ;
+	tmp.append( var );
+	tmp.append( "begin "+procedure_name+";" );
+	tmp.extend( output_procedure_body(body) );
+	tmp.append( "end "+procedure_name+";" );
+
+	for i in tmp:
+		print i
+	return tmp ;
