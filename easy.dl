@@ -9,6 +9,20 @@ int $[foobar: int a]{
 }
 int $[main]{
     int x;
+    x<-5;
+    while(x>0){
+        $[hla_stdout_puti32 : x ];
+        x<-x-1;
+        if ( x==2 )
+            break;
+    }    
+    x<-5;
+    do{
+        x<-x-1;
+        if ( x<=2 )
+            continue;
+        $[hla_stdout_puti32 : x ];
+    }    while(x>0);
     for (x<-1;x<5;x<-x+1)
         $[hla_stdout_puti32 : x ];
 }

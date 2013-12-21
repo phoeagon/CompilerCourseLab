@@ -19,6 +19,18 @@ def get_type( typename ):
 	else:
 		return typename;
 
+def translate_jump_stat(node):
+	if node.children[0]=='return':
+		if len(node.children)==2:
+			#return ;
+			return ["ret();"]
+		else:
+			pass
+	elif node.children[0]=='break':
+		return ["brk"];#to be fixed at upper layer
+	elif node.children[0]=='continue':
+		return ["continue"];
+	return [];
 
 def translate_postfix_exp(node):
 	#print "postfix_exp (len="+str(len(node.children))+"): "+str(node)
@@ -198,6 +210,15 @@ def translate_selection_stat( node ):
 		tmp.extend( translate(node.children[6]) );#to write
 	return tmp
 
+def fix_continue_break( code , head_flag , end_flag ):
+	for i in range(len(code)):
+		if code[i] == 'brk':
+			code[i] = 'jmp '+end_flag+';'
+		elif code[i] == 'continue':
+			code[i] = 'jmp '+head_flag+';'			
+	return code
+		
+
 def translate_iteration_stat( node ):
 	tmp = [] ;
 	#print "translate_iteration_stat"
@@ -208,17 +229,21 @@ def translate_iteration_stat( node ):
 		tmp.extend( translate(node.children[2]) ); #condition
 		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "je "+rand_tag  +";" );
-		tmp.extend( translate(node.children[4]) );#to write
+		tmp.extend( fix_continue_break( translate(node.children[4]) , rand_tag2 , rand_tag ) );#to write
 		tmp.append( "jmp "+rand_tag2  +";" );
 		tmp.append( rand_tag+" :" );
 		#WHILE  LPAREN  exp  RPAREN  stat
 	elif ( node.children[0] == 'do' ):
 		rand_tag = get_random_tag();
-		tmp.append( rand_tag+" :" );
-		tmp.extend( translate(node.children[1]) ); #body
+		rand_tag2 = get_random_tag();
+		rand_tag3 = get_random_tag();
+		tmp.append( rand_tag2+" :" );
+		tmp.extend( fix_continue_break( translate(node.children[1]) , rand_tag3 , rand_tag ) );#to write
+		tmp.append( rand_tag3+" :" );
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
-		tmp.append( "jne "+rand_tag  +";" );
+		tmp.append( "jne "+rand_tag2  +";" );
+		tmp.append( rand_tag+" :" );
 		#DO  stat  WHILE  LPAREN  exp  RPAREN  SEMI
 		pass
 	elif ( node.children[0] == 'for' ):
@@ -232,7 +257,7 @@ def translate_iteration_stat( node ):
 		tmp.extend( translate(node.children[4]) ); #test condition
 		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "je "+rand_tag  +";" );
-		tmp.extend( translate(node.children[8]) );#compound stat
+		tmp.extend( fix_continue_break( translate(node.children[8]) , rand_tag2 , rand_tag ) );#to write
 		tmp.extend( translate(node.children[6]) );#to update var
 		tmp.append( "pop(eax);" );#to do
 		tmp.append( "jmp "+rand_tag2+";" );
@@ -352,6 +377,8 @@ def translate( node ):
 		return [];
 	if  node.type=='translation_unit' :
 		return translate_translation_unit( node );
+	elif node.type=='jump_stat':
+		return translate_jump_stat(node);
 	elif node.type=='postfix_exp':
 		return translate_postfix_exp(node);
 	elif node.type =="exp_stat":
