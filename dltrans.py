@@ -46,8 +46,8 @@ def translate_postfix_exp(node):
 		else:
 			tmp.extend( translate_argument_exp_list( node.children[4] ) );
 			tmp.extend(["call("+node.children[2].val+");" ]);
-		stack_back=str(4*count_argument_exp_list( node.children[4] ));
-		tmp.append("add("+stack_back+",esp);");
+			stack_back=str(4*count_argument_exp_list( node.children[4] ));
+			tmp.append("add("+stack_back+",esp);");
 		tmp.extend([ "pop(edi);","pop(esi);","pop(edx);","pop(ecx);","pop(ebx);"]);
 		tmp.extend([ "push(eax);" ])
 		return tmp
@@ -183,12 +183,14 @@ def translate_selection_stat( node ):
 	if len(node.children)==5:
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) ); #condition
+		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "je "+rand_tag +";" );
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.append( rand_tag+" :" );
 	elif len(node.children)==7:
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) ); #condition
+		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "je "+rand_tag  +";" );
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.append( rand_tag+" :" );
@@ -201,6 +203,7 @@ def translate_iteration_stat( node ):
 	if ( node.children[0]=='while' ):
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) ); #condition
+		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "je "+rand_tag  +";" );
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.append( rand_tag+" :" );
@@ -210,6 +213,7 @@ def translate_iteration_stat( node ):
 		tmp.append( rand_tag+" :" );
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.extend( translate(node.children[2]) ); #condition
+		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "jne "+rand_tag  +";" );
 		#DO  stat  WHILE  LPAREN  exp  RPAREN  SEMI
 		pass
@@ -218,6 +222,7 @@ def translate_iteration_stat( node ):
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) );#to do
 		tmp.extend( translate(node.children[4]) ); #test condition
+		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "je "+rand_tag  +";" );
 		tmp.append( translate(node.children[8]) );#compound stat
 		tmp.append( translate(node.children[6]) );#to update var
@@ -266,32 +271,32 @@ def translate_binary_exp( node ):
 	elif node.val == '&&':
 		tmp.append("and (ebx, eax);");
 	elif node.val == '>':
-		tmp.append("if( ebx>eax ) then");
+		tmp.append("if( eax>ebx ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");
 	elif node.val == '>=':
-		tmp.append("if( ebx>=eax ) then");
+		tmp.append("if( eax>=ebx ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");	
 	elif node.val == '<':
-		tmp.append("if( ebx<=eax ) then");
+		tmp.append("if( eax<=ebx ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");
 		
 	elif node.val == '<=':
-		tmp.append("if( ebx<=eax ) then");
+		tmp.append("if( eax<=ebx ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");		
 	elif node.val == '==':
-		tmp.append("if( ebx==eax ) then");
+		tmp.append("if( eax==ebx ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
@@ -352,6 +357,8 @@ def translate( node ):
 		return translate_compound( node );
 	elif node.type=='iteration_stat':
 		return translate_iteration_stat( node );
+	elif node.type=='selection_stat':
+		return translate_selection_stat( node );
 	elif node.type == 'id':
 		return translate_rvalue_id(node)
 	elif node.type == 'const':
