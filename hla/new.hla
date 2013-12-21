@@ -1,11 +1,21 @@
-program t;
+Lexer generated
+Parser generated
+program prog;
 static
-	numbers:int32[10];
-procedure q_sort( Var numbers:int32;left:int32;right:int32);@nodisplay;
+	numbers:int32;
+	left:int32;
+procedure main();@nodisplay;
+
+begin main;
+	main();
+	push(eax);
+	pop(eax);
+end main;
+procedure q_sort( Var left:int32;right:int32);@nodisplay;
 var 
  l_hold:int32;
- r_hold:int32;
  pivot:int32;
+ r_hold:int32;
 
 begin q_sort;
 	lea( eax,l_hold);
@@ -47,7 +57,7 @@ begin q_sort;
 	xor(eax,eax);
 	endif;
 	push (eax);
-	je tagZTUE9M;
+	je tagB9XNVA;
 	push (numbers);
 	push (right);
 	pop(ebx);
@@ -77,7 +87,7 @@ begin q_sort;
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je tagVTD34V;
+	je tag1HEC6J;
 	lea( eax,right);
 	push(eax);
 	push (right);
@@ -91,7 +101,7 @@ begin q_sort;
 	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tagVTD34V :
+	tag1HEC6J :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -157,7 +167,7 @@ begin q_sort;
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je tagOJXD0J;
+	je tag2DWPSR;
 	lea( eax,left);
 	push(eax);
 	push (left);
@@ -171,7 +181,7 @@ begin q_sort;
 	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tagOJXD0J :
+	tag2DWPSR :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -208,44 +218,7 @@ begin q_sort;
 	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tagZTUE9M :
-	lea( eax,numbers);
-	push(eax);
-	push (left);
-	pop(ebx);
-	pop(eax);
-	add(ebx,eax);
-	push(eax);
-	push (pivot);
-	pop(ebx);
-	pop(eax);
-	mov ( ebx, [eax] ); 
-	push (eax);
-	pop(eax);
-	lea( eax,pivot);
-	push(eax);
-	push (left);
-	pop(ebx);
-	pop(eax);
-	mov ( ebx, [eax] ); 
-	push (eax);
-	pop(eax);
-	lea( eax,left);
-	push(eax);
-	push (l_hold);
-	pop(ebx);
-	pop(eax);
-	mov ( ebx, [eax] ); 
-	push (eax);
-	pop(eax);
-	lea( eax,right);
-	push(eax);
-	push (r_hold);
-	pop(ebx);
-	pop(eax);
-	mov ( ebx, [eax] ); 
-	push (eax);
-	pop(eax);
+	tagB9XNVA :
 	push (left);
 	push (pivot);
 	pop(ebx);
@@ -287,8 +260,7 @@ begin q_sort;
 	pop(ebp);
 	push(eax);
 	pop(eax);
-
 end q_sort;
-
-begin t;
-end t;
+begin prog;
+	 call(main);
+end prog;
