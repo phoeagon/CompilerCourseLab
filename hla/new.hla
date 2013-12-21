@@ -4,11 +4,9 @@ static
 procedure q_sort( Var numbers:int32;left:int32;right:int32);@nodisplay;
 var 
  l_hold:int32;
- right:int32;
  r_hold:int32;
  pivot:int32;
 
-begin q_sort;
 begin q_sort;
 	lea( eax,l_hold);
 	push(eax);
@@ -46,10 +44,10 @@ begin q_sort;
 	if( ebx<=eax ) then
 	mov(1,eax);
 	else
-	xor(eax);
+	xor(eax,eax);
 	endif;
 	push (eax);
-	je tag9A5VRY;
+	je tagZTUE9M;
 	push (numbers);
 	push (right);
 	pop(ebx);
@@ -62,7 +60,7 @@ begin q_sort;
 	if( ebx>=eax ) then
 	mov(1,eax);
 	else
-	xor(eax);
+	xor(eax,eax);
 	endif;
 	push (eax);
 	push (left);
@@ -72,14 +70,14 @@ begin q_sort;
 	if( ebx<=eax ) then
 	mov(1,eax);
 	else
-	xor(eax);
+	xor(eax,eax);
 	endif;
 	push (eax);
 	pop(ebx);
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je tagO0AA3G;
+	je tagVTD34V;
 	lea( eax,right);
 	push(eax);
 	push (right);
@@ -93,7 +91,7 @@ begin q_sort;
 	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tagO0AA3G :
+	tagVTD34V :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -142,7 +140,7 @@ begin q_sort;
 	if( ebx<=eax ) then
 	mov(1,eax);
 	else
-	xor(eax);
+	xor(eax,eax);
 	endif;
 	push (eax);
 	push (left);
@@ -152,14 +150,14 @@ begin q_sort;
 	if( ebx<=eax ) then
 	mov(1,eax);
 	else
-	xor(eax);
+	xor(eax,eax);
 	endif;
 	push (eax);
 	pop(ebx);
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je tagDHN5NA;
+	je tagOJXD0J;
 	lea( eax,left);
 	push(eax);
 	push (left);
@@ -173,7 +171,7 @@ begin q_sort;
 	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tagDHN5NA :
+	tagOJXD0J :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -210,7 +208,7 @@ begin q_sort;
 	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tag9A5VRY :
+	tagZTUE9M :
 	lea( eax,numbers);
 	push(eax);
 	push (left);
@@ -255,7 +253,7 @@ begin q_sort;
 	if( ebx<=eax ) then
 	mov(1,eax);
 	else
-	xor(eax);
+	xor(eax,eax);
 	endif;
 	push (eax);
 	push(ebp);
@@ -278,7 +276,7 @@ begin q_sort;
 	if( ebx>eax ) then
 	mov(1,eax);
 	else
-	xor(eax);
+	xor(eax,eax);
 	endif;
 	push (eax);
 	push(ebp);

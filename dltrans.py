@@ -236,32 +236,32 @@ def translate_binary_exp( node ):
 		tmp.append("if( ebx>eax ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
-		tmp.append( "xor(eax);" );
+		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");
 	elif node.val == '>=':
 		tmp.append("if( ebx>=eax ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
-		tmp.append( "xor(eax);" );
+		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");	
 	elif node.val == '<':
 		tmp.append("if( ebx<=eax ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
-		tmp.append( "xor(eax);" );
+		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");
 		
 	elif node.val == '<=':
 		tmp.append("if( ebx<=eax ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
-		tmp.append( "xor(eax);" );
+		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");		
 	elif node.val == '==':
 		tmp.append("if( ebx==eax ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
-		tmp.append( "xor(eax);" );
+		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");
 		
 	tmp.append("push (eax);");
