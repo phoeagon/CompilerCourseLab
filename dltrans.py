@@ -343,7 +343,7 @@ def output_procedure_body( code ):
 			continue
 		if line[-1]==';':
 			result.append( "\t"+line );
-		else:
+		elif line[-1]!=':': #fix label
 			result.append( "\t"+line+';');
 	#print result ;
 	return result;
