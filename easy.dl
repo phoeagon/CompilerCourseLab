@@ -5,13 +5,14 @@ int left;
 int $[main]{
     int a ;
     int b;
-    a<-2;
+    a<-5;
     b<-32;
     $[hla_stdout_puti32 : a ];
     $[hla_stdout_putc : b ];
-    while( a>0 ){
+    do{
         $[hla_stdout_puti32 : a ];
+        $[hla_stdout_putc : b ];
         a<-a-1;
-    }
+    }while( a>0 );
 }
 

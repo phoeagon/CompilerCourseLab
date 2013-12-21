@@ -202,17 +202,20 @@ def translate_iteration_stat( node ):
 	#print "translate_iteration_stat"
 	if ( node.children[0]=='while' ):
 		rand_tag = get_random_tag();
+		rand_tag2 = get_random_tag();
+		tmp.append( rand_tag2+" :" );
 		tmp.extend( translate(node.children[2]) ); #condition
 		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "je "+rand_tag  +";" );
 		tmp.extend( translate(node.children[4]) );#to write
+		tmp.append( "jmp "+rand_tag2  +";" );
 		tmp.append( rand_tag+" :" );
 		#WHILE  LPAREN  exp  RPAREN  stat
 	elif ( node.children[0] == 'do' ):
 		rand_tag = get_random_tag();
 		tmp.append( rand_tag+" :" );
+		tmp.extend( translate(node.children[1]) ); #body
 		tmp.extend( translate(node.children[4]) );#to write
-		tmp.extend( translate(node.children[2]) ); #condition
 		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "jne "+rand_tag  +";" );
 		#DO  stat  WHILE  LPAREN  exp  RPAREN  SEMI

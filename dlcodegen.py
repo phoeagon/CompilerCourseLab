@@ -58,8 +58,8 @@ def p_iteration_stat( node ):
 	elif ( node.children[0] == 'DO' ):
 		rand_tag = get_random_tag();
 		tmp.push( rand_tag+" :" );
+		tmp.push( node.children[1].codegen() ); #condition
 		tmp.push( node.children[4].codegen() );#to write
-		tmp.push( node.children[2].codegen() ); #condition
 		tmp.push( "jne "+rand_tag );
 		#DO  stat  WHILE  LPAREN  exp  RPAREN  SEMI
 		pass
