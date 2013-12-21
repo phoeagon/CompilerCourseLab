@@ -46,8 +46,9 @@ def translate_postfix_exp(node):
 		else:
 			tmp.extend( translate_argument_exp_list( node.children[4] ) );
 			tmp.extend(["call("+node.children[2].val+");" ]);
-			stack_back=str(4*count_argument_exp_list( node.children[4] ));
-			tmp.append("add("+stack_back+",esp);");
+			# I still don't know why this is not needed
+			#stack_back=str(4*count_argument_exp_list( node.children[4] ));
+			#tmp.append("add("+stack_back+",esp);");
 		tmp.extend([ "pop(edi);","pop(esi);","pop(edx);","pop(ecx);","pop(ebx);"]);
 		tmp.extend([ "push(eax);" ])
 		return tmp

@@ -1,7 +1,16 @@
 int numbers[100];
 int left;
 
-
+int $[foobar: int a]{
+    $[hla_stdout_puti32 : a ];
+    if ( a > 0 )
+        $[foobar : a-1];
+    $[hla_stdout_puti32 : a ];
+}
+int $[main]{
+    $[foobar : 5];
+}
+/*
 int $[main]{
     int a ;
     int b;
@@ -16,3 +25,4 @@ int $[main]{
     }while( a>0 );
 }
 
+*/
