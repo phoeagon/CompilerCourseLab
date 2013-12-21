@@ -183,6 +183,9 @@ def check_postfix_expr( node , context ):
 			
 		elif ( node.children[1]== '[' ): #CHECk TYPE
 			node.val_type = node.children[0].val_type;
+			bracket_sub=node.val_type.find('[');
+			if bracket_sub != -1:
+				node.val_type = node.val_type[0:bracket_sub];
 		return True;
 	return False;
 
@@ -216,7 +219,12 @@ def walk( node , context ):
 	#elif ( node.type=='empty' ):	return
 	elif ( node.type=='decl' ): #TODO
 		node.val_type = 'void';
-		context[ node.children[1].val ] = node.children[0].val ;
+		var_type = node.children[0].val
+		if len(node.children)>1:
+			if len(node.children[1].children)==4:
+				if (node.children[1].children[1]=='['):
+					var_type += "["+str(node.children[1].children[2].val)+"]";
+		context[ node.children[1].val ] = var_type ;
 	#elif ( node.type=='translation_unit' ): return ;
 	#elif ( node.type=='external_decl' ): return ;
 	elif ( node.type=='decl' ): #TODO

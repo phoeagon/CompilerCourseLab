@@ -10,6 +10,7 @@ global_code = [];
 global_vars = {};
 
 def get_type( typename ):
+	typename = typename.replace("int[","int32[");
 	if typename =='int':
 		return 'int32'
 	elif typename == 'arr':
