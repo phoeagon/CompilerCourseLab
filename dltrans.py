@@ -22,23 +22,23 @@ def translate_postfix_exp(node):
 		tmp = [];
 		tmp.extend( translate( node.children[0] ) )
 		tmp.extend( translate( node.children[2] ) )
-		tmp.extend( [ "pop(ebx)", "pop(eax)" ] )
-		tmp.extend( ["add(ebx,eax)", "pushd([eax])"] )
+		tmp.extend( [ "pop(ebx);", "pop(eax);" ] )
+		tmp.extend( ["add(ebx,eax);", "pushd([eax]);"] )
 		return tmp
 	elif len(node.children)==3:
 		#a->id
 		return [];
 	elif len(node.children)==6:
 		#FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
-		tmp = ["push(ebp)","mov(esp,ebp)"];
+		tmp = ["push(ebp);","mov(esp,ebp);"];
 		tmp.extend( translate_argument_exp_list( node.children[4] ) );
-		tmp.extend(["call("+node.children[2].val+")" ]);
-		tmp.extend([ "mov(ebp,esp)", "pop(ebp)" ])
-		tmp.extend([ "push(eax)" ])
+		tmp.extend(["call("+node.children[2].val+");" ]);
+		tmp.extend([ "mov(ebp,esp);", "pop(ebp);" ])
+		tmp.extend([ "push(eax);" ])
 		return tmp
 	elif len(node.children)==4 and node.children[0]=='$':
 		#FUNCALL LBRACKET  ident  RBRACKET
-		return [node.children[2].val+"()","push(eax)"];
+		return [node.children[2].val+"();","push(eax);"];
 	return [];
 
 def translate_argument_exp_list(node):
@@ -121,12 +121,12 @@ def translate_translation_unit( node ):
 
 
 def translate_unary_exp( node ):
-	tmp = [ "pop(eax)" ];
+	tmp = [ "pop(eax);" ];
 	if ( node.value=='-' ):
-		tmp.append("neg(eax)");
+		tmp.append("neg(eax);");
 	elif node.value=='+':
 		pass
-	tmp.append( "push(eax)" );
+	tmp.append( "push(eax);" );
 	return tmp 
 	
 
@@ -135,9 +135,9 @@ def translate_const( node ):
 	# test if is
 	tmp=[];
 	if ( node.val_type=='int' ):
-		tmp.append("pushd("+node.val+")");
+		tmp.append("pushd("+node.val+");");
 	elif ( node.val_type=='float'):
-		tmp.append("pushf("+node.val+")");
+		tmp.append("pushf("+node.val+");");
 	return tmp
 
 def translate_decl( node ):
@@ -150,13 +150,13 @@ def translate_selection_stat( node ):
 	if len(node.children)==5:
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) ); #condition
-		tmp.append( "je "+rand_tag );
+		tmp.append( "je "+rand_tag +";" );
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.append( rand_tag+" :" );
 	elif len(node.children)==7:
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) ); #condition
-		tmp.append( "je "+rand_tag );
+		tmp.append( "je "+rand_tag  +";" );
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.append( rand_tag+" :" );
 		tmp.extend( translate(node.children[6]) );#to write
@@ -168,7 +168,7 @@ def translate_iteration_stat( node ):
 	if ( node.children[0]=='while' ):
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) ); #condition
-		tmp.append( "je "+rand_tag );
+		tmp.append( "je "+rand_tag  +";" );
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.append( rand_tag+" :" );
 		#WHILE  LPAREN  exp  RPAREN  stat
@@ -177,7 +177,7 @@ def translate_iteration_stat( node ):
 		tmp.append( rand_tag+" :" );
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.extend( translate(node.children[2]) ); #condition
-		tmp.append( "jne "+rand_tag );
+		tmp.append( "jne "+rand_tag  +";" );
 		#DO  stat  WHILE  LPAREN  exp  RPAREN  SEMI
 		pass
 	elif ( node.children[0] == 'for' ):
@@ -185,7 +185,7 @@ def translate_iteration_stat( node ):
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) );#to do
 		tmp.extend( translate(node.children[4]) ); #test condition
-		tmp.append( "je "+rand_tag );
+		tmp.append( "je "+rand_tag  +";" );
 		tmp.append( translate(node.children[8]) );#compound stat
 		tmp.append( translate(node.children[6]) );#to update var
 		tmp.append( rand_tag+" :" );
@@ -204,7 +204,7 @@ def translate_compound( node ):
 
 
 def translate_rvalue_id( node ):
-	return ["push ("+node.val+")"];
+	return ["push ("+node.val+");"];
 	
 def translate_binary_exp( node ):
 	if ( len(node.children)!=3 ):
@@ -216,57 +216,55 @@ def translate_binary_exp( node ):
 	tmp = [  ]; 
 	tmp.extend( translate(node.children[0]) )
 	tmp.extend( translate(node.children[2]) )
-	tmp.extend( [ "pop(ebx)" , "pop(eax)"  ] )
+	tmp.extend( [ "pop(ebx);" , "pop(eax);"  ] )
 	if  node.val == '+':
-		tmp.append("add(ebx, eax)");
+		tmp.append("add(ebx, eax);");
 	elif node.val == '-':
-		tmp.append("sub(ebx, eax)");
+		tmp.append("sub(ebx, eax);");
 	elif node.val == '*':
-		tmp.append("imul(ebx, eax)");
+		tmp.append("imul(ebx, eax);");
 	elif node.val == '/':
-		tmp.append("extend(edx)")
-		tmp.append("xor (edx,edx)")
-		tmp.append("idiv(ebx)")
-		tmp.append("pop(edx)")
+		tmp.append("extend(edx);")
+		tmp.append("xor (edx,edx);")
+		tmp.append("idiv(ebx);")
+		tmp.append("pop(edx);")
 	elif node.val == '||':
-		tmp.append("or(ebx, eax)");
+		tmp.append("or(ebx, eax);");
 	elif node.val == '&&':
-		tmp.append("and (ebx, eax)");
+		tmp.append("and (ebx, eax);");
 	elif node.val == '>':
-		print "comparison >!!!!!!!!!!!!"
-		tag=get_random_tag();
-		tmp.append("cmp(ebx,eax)");
-		tmp.append("jle "+tag);
-		tmp.append("test(1,1)");
-		tmp.append( tag +":" );
+		tmp.append("if( ebx>eax ) then");
+		tmp.append("mov(1,eax);");
+		tmp.append("else");
+		tmp.append( "xor(eax);" );
+		tmp.append("endif;");
 	elif node.val == '>=':
-		tag=get_random_tag();
-		tmp.append("cmp(ebx,eax)");
-		tmp.append("jl "+tag);
-		tmp.append("test(1,1)");
-		tmp.append( tag +":" );		
+		tmp.append("if( ebx>=eax ) then");
+		tmp.append("mov(1,eax);");
+		tmp.append("else");
+		tmp.append( "xor(eax);" );
+		tmp.append("endif;");	
 	elif node.val == '<':
-		tag=get_random_tag();
-		tmp.append("cmp(ebx,eax)");
-		tmp.append("jge "+tag);
-		tmp.append("test(1,1)");
-		tmp.append( tag +":" );	
+		tmp.append("if( ebx<=eax ) then");
+		tmp.append("mov(1,eax);");
+		tmp.append("else");
+		tmp.append( "xor(eax);" );
+		tmp.append("endif;");
 		
 	elif node.val == '<=':
-		tag=get_random_tag();
-		tmp.append("cmp(ebx,eax)");
-		tmp.append("jg "+tag);
-		tmp.append("test(1,1)");
-		tmp.append( tag +":" );	
-
-		
+		tmp.append("if( ebx<=eax ) then");
+		tmp.append("mov(1,eax);");
+		tmp.append("else");
+		tmp.append( "xor(eax);" );
+		tmp.append("endif;");		
 	elif node.val == '==':
-		tag=get_random_tag();
-		tmp.append("cmp(ebx,eax)");
-		tmp.append("jne "+tag);
-		tmp.append("test(1,1)");
-		tmp.append( tag +":" );	
-	tmp.append("push (eax)");
+		tmp.append("if( ebx==eax ) then");
+		tmp.append("mov(1,eax);");
+		tmp.append("else");
+		tmp.append( "xor(eax);" );
+		tmp.append("endif;");
+		
+	tmp.append("push (eax);");
 	return tmp
 
 def translate_assignment_exp( node ):
@@ -276,23 +274,23 @@ def translate_assignment_exp( node ):
 	tmp = []; 
 	tmp.extend( translate_leftvalue(node.children[0]) )
 	tmp.extend( translate(node.children[2]) )
-	tmp.extend( [ "pop(ebx)","pop(eax)" ] )
-	tmp.append("mov ( ebx, [eax] ) ");
-	tmp.append("push (eax)");
+	tmp.extend( [ "pop(ebx);","pop(eax);" ] )
+	tmp.append("mov ( ebx, [eax] ); ");
+	tmp.append("push (eax);");
 	#print "assignment_exp: ",tmp
 	return tmp
 	
 def translate_leftvalue( node ):
 	#print"translate_leftvalue: "+node.type
 	if node.type=='id':
-		return ["lea( eax,"+node.val+")","push(eax)"]
+		return ["lea( eax,"+node.val+");","push(eax);"]
 	elif node.type=='postfix_exp'and len(node.children)==4:
 		tmp = [];
 		# id [ sub ] 
 		tmp.extend( translate_leftvalue( node.children[0] ) )
 		tmp.extend( translate( node.children[2] ) )
-		tmp.extend( [ "pop(ebx)", "pop(eax)" ] )
-		tmp.extend( ["add(ebx,eax)", "push(eax)"] )
+		tmp.extend( [ "pop(ebx);", "pop(eax);" ] )
+		tmp.extend( ["add(ebx,eax);", "push(eax);"] )
 		return tmp;
 	else:
 		for i in range(len(node.children)):
@@ -310,7 +308,7 @@ def translate( node ):
 		return translate_postfix_exp(node);
 	elif node.type =="exp_stat":
 		tmp=translate(node.children[0]);
-		tmp.append("pop(eax)"); #clear last result
+		tmp.append("pop(eax);"); #clear last result
 		return tmp;
 	elif node.type=='mult_exp' or node.type=='additive_exp'\
 		or node.type=='relational_exp' or node.type=='logical_exp':
@@ -342,12 +340,12 @@ def output_procedure_body( code ):
 	for line in code:
 		if len(line)==0:
 			continue
-		if line[-1]==';':
-			result.append( "\t"+line );
-		elif line[-1]!=':': #fix label
-			result.append( "\t"+line+';');
-		else:
-			result.append( "\t"+line );
+		#if line[-1]==';':
+		result.append( "\t"+line );
+		#elif line[-1]!=':' and line!="else" and line[]!="": #fix label
+	#		result.append( "\t"+line+';');
+	#	else:
+	#		result.append( "\t"+line );
 	#print result ;
 	return result;
 

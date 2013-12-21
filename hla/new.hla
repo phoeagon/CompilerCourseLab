@@ -15,7 +15,7 @@ begin q_sort;
 	push (left);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	lea( eax,r_hold);
@@ -23,7 +23,7 @@ begin q_sort;
 	push (right);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	lea( eax,pivot);
@@ -36,19 +36,20 @@ begin q_sort;
 	pushd([eax]);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	push (left);
 	push (right);
 	pop(ebx);
 	pop(eax);
-	cmp(ebx,eax);
-	jge tagWGSA4P;
-	test(1,1);
-	tagWGSA4P:
+	if( ebx<=eax ) then
+	mov(1,eax);
+	else
+	xor(eax);
+	endif;
 	push (eax);
-	je tag935QJ7;
+	je tag9A5VRY;
 	push (numbers);
 	push (right);
 	pop(ebx);
@@ -58,25 +59,27 @@ begin q_sort;
 	push (pivot);
 	pop(ebx);
 	pop(eax);
-	cmp(ebx,eax);
-	jl tagXMIL2W;
-	test(1,1);
-	tagXMIL2W:
+	if( ebx>=eax ) then
+	mov(1,eax);
+	else
+	xor(eax);
+	endif;
 	push (eax);
 	push (left);
 	push (right);
 	pop(ebx);
 	pop(eax);
-	cmp(ebx,eax);
-	jge tag72772L;
-	test(1,1);
-	tag72772L:
+	if( ebx<=eax ) then
+	mov(1,eax);
+	else
+	xor(eax);
+	endif;
 	push (eax);
 	pop(ebx);
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je tagX7HX4V;
+	je tagO0AA3G;
 	lea( eax,right);
 	push(eax);
 	push (right);
@@ -87,10 +90,10 @@ begin q_sort;
 	push (eax);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tagX7HX4V :
+	tagO0AA3G :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -111,7 +114,7 @@ begin q_sort;
 	pushd([eax]);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	lea( eax,left);
@@ -124,7 +127,7 @@ begin q_sort;
 	push (eax);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	push (numbers);
@@ -136,25 +139,27 @@ begin q_sort;
 	push (pivot);
 	pop(ebx);
 	pop(eax);
-	cmp(ebx,eax);
-	jg tag23H517;
-	test(1,1);
-	tag23H517:
+	if( ebx<=eax ) then
+	mov(1,eax);
+	else
+	xor(eax);
+	endif;
 	push (eax);
 	push (left);
 	push (right);
 	pop(ebx);
 	pop(eax);
-	cmp(ebx,eax);
-	jge tag1M3Y9F;
-	test(1,1);
-	tag1M3Y9F:
+	if( ebx<=eax ) then
+	mov(1,eax);
+	else
+	xor(eax);
+	endif;
 	push (eax);
 	pop(ebx);
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je tag36HN32;
+	je tagDHN5NA;
 	lea( eax,left);
 	push(eax);
 	push (left);
@@ -165,10 +170,10 @@ begin q_sort;
 	push (eax);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tag36HN32 :
+	tagDHN5NA :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -189,7 +194,7 @@ begin q_sort;
 	pushd([eax]);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	lea( eax,right);
@@ -202,10 +207,10 @@ begin q_sort;
 	push (eax);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tag935QJ7 :
+	tag9A5VRY :
 	lea( eax,numbers);
 	push(eax);
 	push (left);
@@ -216,7 +221,7 @@ begin q_sort;
 	push (pivot);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	lea( eax,pivot);
@@ -224,7 +229,7 @@ begin q_sort;
 	push (left);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	lea( eax,left);
@@ -232,7 +237,7 @@ begin q_sort;
 	push (l_hold);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	lea( eax,right);
@@ -240,17 +245,18 @@ begin q_sort;
 	push (r_hold);
 	pop(ebx);
 	pop(eax);
-	mov ( ebx, [eax] ) ;
+	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
 	push (left);
 	push (pivot);
 	pop(ebx);
 	pop(eax);
-	cmp(ebx,eax);
-	jge tag1ALT1S;
-	test(1,1);
-	tag1ALT1S:
+	if( ebx<=eax ) then
+	mov(1,eax);
+	else
+	xor(eax);
+	endif;
 	push (eax);
 	push(ebp);
 	mov(esp,ebp);
@@ -269,10 +275,11 @@ begin q_sort;
 	push (pivot);
 	pop(ebx);
 	pop(eax);
-	cmp(ebx,eax);
-	jle tagHP0ZEM;
-	test(1,1);
-	tagHP0ZEM:
+	if( ebx>eax ) then
+	mov(1,eax);
+	else
+	xor(eax);
+	endif;
 	push (eax);
 	push(ebp);
 	mov(esp,ebp);
