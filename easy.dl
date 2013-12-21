@@ -1,15 +1,17 @@
 int numbers[100];
 int left;
 
-int $[test: int numbers]{
-    int a;
-	a<- 1;
-}
-void $[ q_sort : int numbers , int left, int right]{//quicksort
-	int pivot;
-	r_hold <- right;
-    numbers[1]<-2;
-    if(pivot>0)
-        pivot<-0;
+
+int $[main]{
+    int a ;
+    int b;
+    a<-1;
+    b<-2;
+    $[hla_stdout_puti32 : a ];
+    $[hla_stdout_putc : b ];
+    while ( a==1 ){
+        $[hla_stdout_puti32 : a ];
+        a<-0;
+    }
 }
 

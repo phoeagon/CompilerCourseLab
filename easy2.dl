@@ -4,7 +4,7 @@ int numbers[100];
  **/
 int left;
 int $[main]{
-    $[main];
+    $[hla_stdout_puti32:left];
 }
 
 void $[ q_sort : int left, int right]{//quicksort

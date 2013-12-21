@@ -2,7 +2,7 @@ import sys
 import dllex
 import ply.yacc as yacc
 import copy 
-
+from dlcheck2 import is_internal
 
 import dlparse 
 
@@ -168,6 +168,9 @@ def check_postfix_expr( node , context ):
 		elif ( node.children[0]=='$'): #TODO: Check argument type
 			# FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
 			tmp = node.children[2].val
+			if is_internal( tmp ):
+				node.val_type = 'int'
+				return True
 			node.val_type = context[ tmp ] ;
 			if ( len(node.children) == 6 ):
 				#debug_node( node , context ); raise Exception();

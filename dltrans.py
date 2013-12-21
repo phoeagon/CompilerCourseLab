@@ -3,6 +3,7 @@ import sys
 from dlparse import Node
 import string
 import random
+from dlcheck2 import is_internal
 
 procedure_code = [];
 global_code = [];
@@ -36,16 +37,18 @@ def translate_postfix_exp(node):
 		return [];
 	elif len(node.children)==6:
 		#FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
-		tmp = ["push(ebp);","mov(esp,ebp);"];
-		if node.children[2].val[0:4]=="hla_" :
+		tmp = ["push(ebx);","push(ecx);","push(edx);","push(esi);","push(edi);"];
+		if is_internal(node.children[2].val):
 			routine = node.children[2].val[4:]
-			routine.replace('_','.');
+			routine = routine.replace('_','.');
 			tmp.extend( translate_argument_exp_list( node.children[4] ) );
-			tmp.extend( 'call '+routine +';' );
+			tmp.append( 'call '+routine +';' );
 		else:
 			tmp.extend( translate_argument_exp_list( node.children[4] ) );
 			tmp.extend(["call("+node.children[2].val+");" ]);
-		tmp.extend([ "mov(ebp,esp);", "pop(ebp);" ])
+		stack_back=str(4*count_argument_exp_list( node.children[4] ));
+		tmp.append("add("+stack_back+",esp);");
+		tmp.extend([ "pop(edi);","pop(esi);","pop(edx);","pop(ecx);","pop(ebx);"]);
 		tmp.extend([ "push(eax);" ])
 		return tmp
 	elif len(node.children)==4 and node.children[0]=='$':
@@ -63,6 +66,17 @@ def translate_argument_exp_list(node):
 		return tmp;
 	else : #if node.type=='assignment_exp':
 		return translate( node )
+
+def count_argument_exp_list(node):
+	if type(node)==str: #fix ";"
+		return 0;
+	elif node.type=='argument_exp_list':
+		tmp = 0;
+		for i in range(len(node.children)-1,0,-1):
+			tmp+=count_argument_exp_list(node.children[i])
+		return tmp;
+	else : #if node.type=='assignment_exp':
+		return 1;
 
 def translate_function_definition (node,context):
 	#print context
@@ -295,7 +309,7 @@ def translate_assignment_exp( node ):
 	tmp.extend( translate(node.children[2]) )
 	tmp.extend( [ "pop(ebx);","pop(eax);" ] )
 	tmp.append("mov ( ebx, [eax] ); ");
-	tmp.append("push (eax);");
+	tmp.append("pushd([eax]);");
 	#print "assignment_exp: ",tmp
 	return tmp
 	

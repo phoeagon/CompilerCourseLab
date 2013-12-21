@@ -3,6 +3,8 @@ import dllex
 import ply.yacc as yacc
 import copy 
 
+def is_internal( routine ):
+	return routine[0:4]=='hla_'
 
 import dlparse 
 
@@ -174,12 +176,15 @@ def check_postfix_expr( node , context ):
 		elif ( node.children[0]=='$'): #TODO: Check argument type
 			# FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
 			tmp = node.children[2].val
-			node.val_type = context[ tmp ] ;
-			if ( len(node.children) == 6 ):
-				#debug_node( node , context ); raise Exception();
-				check_param_type( node.children[4] , tmp , context );
+			if is_internal( tmp ):
+				node.val_type = 'int'
 			else:
-				check_param_empty( tmp , context );
+				node.val_type = context[ tmp ] ;
+				if ( len(node.children) == 6 ):
+					#debug_node( node , context ); raise Exception();
+					check_param_type( node.children[4] , tmp , context );
+				else:
+					check_param_empty( tmp , context );
 			
 		elif ( node.children[1]== '[' ): #CHECk TYPE
 			node.val_type = node.children[0].val_type;
