@@ -37,8 +37,14 @@ def translate_postfix_exp(node):
 	elif len(node.children)==6:
 		#FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
 		tmp = ["push(ebp);","mov(esp,ebp);"];
-		tmp.extend( translate_argument_exp_list( node.children[4] ) );
-		tmp.extend(["call("+node.children[2].val+");" ]);
+		if node.children[2].val[0:4]=="hla_" :
+			routine = node.children[2].val[4:]
+			routine.replace('_','.');
+			tmp.extend( translate_argument_exp_list( node.children[4] ) );
+			tmp.extend( 'call '+routine +';' );
+		else:
+			tmp.extend( translate_argument_exp_list( node.children[4] ) );
+			tmp.extend(["call("+node.children[2].val+");" ]);
 		tmp.extend([ "mov(ebp,esp);", "pop(ebp);" ])
 		tmp.extend([ "push(eax);" ])
 		return tmp
@@ -398,11 +404,13 @@ def translate_static( context ):
 	return tmp ;
 
 def translate_everything():
-	print "program prog;"
+	tag=get_random_tag("prog");
+	print "program "+tag+";"
+	print "#include( \"stdlib.hhf\" );"
 	for line in global_code:
 		print line
 	for line in procedure_code:
 		print line
-	print "begin prog;"
+	print "begin "+tag+";"
 	print "\t call(main);"
-	print "end prog;"
+	print "end "+tag+";"
