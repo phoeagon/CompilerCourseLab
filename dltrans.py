@@ -114,7 +114,7 @@ def add_translation_method( node ):
 
 def get_random_tag(prefix="tag",size=6):
 	chars=string.ascii_uppercase + string.digits
-	return prefix.join(random.choice(chars) for x in range(size))
+	return prefix+"".join(random.choice(chars) for x in range(size))
 
 def translate_translation_unit( node ):
 	pass
@@ -338,6 +338,7 @@ def translate( node ):
 
 def output_procedure_body( code ):
 	result = [] ;
+	#print code;
 	for line in code:
 		if len(line)==0:
 			continue
@@ -345,6 +346,8 @@ def output_procedure_body( code ):
 			result.append( "\t"+line );
 		elif line[-1]!=':': #fix label
 			result.append( "\t"+line+';');
+		else:
+			result.append( "\t"+line );
 	#print result ;
 	return result;
 

@@ -9,6 +9,7 @@ var
  pivot:int32;
 
 begin q_sort;
+begin q_sort;
 	lea( eax,l_hold);
 	push(eax);
 	push (left);
@@ -43,10 +44,11 @@ begin q_sort;
 	pop(ebx);
 	pop(eax);
 	cmp(ebx,eax);
-	jge ZtagMtagDtagWtagHtagU;
+	jge tagWGSA4P;
 	test(1,1);
+	tagWGSA4P:
 	push (eax);
-	je LtagRtagWtag0tag4tagS;
+	je tag935QJ7;
 	push (numbers);
 	push (right);
 	pop(ebx);
@@ -57,22 +59,24 @@ begin q_sort;
 	pop(ebx);
 	pop(eax);
 	cmp(ebx,eax);
-	jl DtagDtagNtagWtagAtagF;
+	jl tagXMIL2W;
 	test(1,1);
+	tagXMIL2W:
 	push (eax);
 	push (left);
 	push (right);
 	pop(ebx);
 	pop(eax);
 	cmp(ebx,eax);
-	jge KtagAtag6tagFtagAtagF;
+	jge tag72772L;
 	test(1,1);
+	tag72772L:
 	push (eax);
 	pop(ebx);
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je Qtag3tag1tagStagUtag2;
+	je tagX7HX4V;
 	lea( eax,right);
 	push(eax);
 	push (right);
@@ -86,6 +90,7 @@ begin q_sort;
 	mov ( ebx, [eax] ) ;
 	push (eax);
 	pop(eax);
+	tagX7HX4V :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -132,22 +137,24 @@ begin q_sort;
 	pop(ebx);
 	pop(eax);
 	cmp(ebx,eax);
-	jg PtagStagCtag4tag6tagE;
+	jg tag23H517;
 	test(1,1);
+	tag23H517:
 	push (eax);
 	push (left);
 	push (right);
 	pop(ebx);
 	pop(eax);
 	cmp(ebx,eax);
-	jge Gtag1tagUtagJtagEtagZ;
+	jge tag1M3Y9F;
 	test(1,1);
+	tag1M3Y9F:
 	push (eax);
 	pop(ebx);
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je 6tagZtag9tagKtagCtagA;
+	je tag36HN32;
 	lea( eax,left);
 	push(eax);
 	push (left);
@@ -161,6 +168,7 @@ begin q_sort;
 	mov ( ebx, [eax] ) ;
 	push (eax);
 	pop(eax);
+	tag36HN32 :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -197,6 +205,7 @@ begin q_sort;
 	mov ( ebx, [eax] ) ;
 	push (eax);
 	pop(eax);
+	tag935QJ7 :
 	lea( eax,numbers);
 	push(eax);
 	push (left);
@@ -239,8 +248,9 @@ begin q_sort;
 	pop(ebx);
 	pop(eax);
 	cmp(ebx,eax);
-	jge StagYtagXtagLtagCtagK;
+	jge tag1ALT1S;
 	test(1,1);
+	tag1ALT1S:
 	push (eax);
 	push(ebp);
 	mov(esp,ebp);
@@ -260,8 +270,9 @@ begin q_sort;
 	pop(ebx);
 	pop(eax);
 	cmp(ebx,eax);
-	jle 2tagJtagItagStagFtagF;
+	jle tagHP0ZEM;
 	test(1,1);
+	tagHP0ZEM:
 	push (eax);
 	push(ebp);
 	mov(esp,ebp);
@@ -271,6 +282,7 @@ begin q_sort;
 	pop(ebp);
 	push(eax);
 	pop(eax);
+
 end q_sort;
 
 begin t;
