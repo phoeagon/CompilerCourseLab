@@ -61,7 +61,7 @@ def translate_function_definition (node,context):
 	#print context
 	result=""
 	func_name = node.val
-	result="procedure "+func_name+"("
+	result="procedure "+func_name;
 	tmp = '@_func_'+func_name
 	if tmp not in context:
 		print "fuck!!!!!"
@@ -70,13 +70,13 @@ def translate_function_definition (node,context):
 	if ( '@params-cnt' not in tmp2 or
 		'@params' not in tmp2 ): ##no arg needed
 		#epilog
-		result+= ");@nodisplay;"
+		result+= ";@nodisplay;"
 		#print "Procedure: ",result
 		return result
 	param_cnt = tmp2[ '@params-cnt' ]
 	for i in range(param_cnt):
 		if i==0:
-			result=result+" Var ";
+			result=result+"( Var ";
 		else:
 			result=result+";";
 		#print tmp2['@params']
