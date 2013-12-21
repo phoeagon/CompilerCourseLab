@@ -224,12 +224,18 @@ def translate_iteration_stat( node ):
 	elif ( node.children[0] == 'for' ):
 		#FOR  LPAREN  exp SEMI  exp  SEMI exp  RPAREN  stat
 		rand_tag = get_random_tag();
+		rand_tag2 = get_random_tag();
 		tmp.extend( translate(node.children[2]) );#to do
+		tmp.append( "pop(eax);" );#to do
+		
+		tmp.append( rand_tag2+":");
 		tmp.extend( translate(node.children[4]) ); #test condition
 		tmp.extend( ["pop(eax);","test(eax,eax);" ]);
 		tmp.append( "je "+rand_tag  +";" );
-		tmp.append( translate(node.children[8]) );#compound stat
-		tmp.append( translate(node.children[6]) );#to update var
+		tmp.extend( translate(node.children[8]) );#compound stat
+		tmp.extend( translate(node.children[6]) );#to update var
+		tmp.append( "pop(eax);" );#to do
+		tmp.append( "jmp "+rand_tag2+";" );
 		tmp.append( rand_tag+" :" );
 		pass
 	elif ( node.children[0] == 'foreach' ):

@@ -8,7 +8,9 @@ int $[foobar: int a]{
     $[hla_stdout_puti32 : a ];
 }
 int $[main]{
-    $[foobar : 5];
+    int x;
+    for (x<-1;x<5;x<-x+1)
+        $[hla_stdout_puti32 : x ];
 }
 /*
 int $[main]{
