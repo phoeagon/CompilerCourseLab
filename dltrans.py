@@ -282,7 +282,35 @@ def translate_iteration_stat( node ):
 		pass
 	elif ( node.children[0] == 'foreach' ):
 		#FOREACH  LPAREN ident IN  exp  RPAREN  stat
-		pass
+		tmp = [];
+		typespec =  node.children[4].val_type;
+		sub_pos = typespec.rfind('[');
+		if  sub_pos == -1 :
+			end_tag = get_random_tag();
+			head_tag = get_random_tag();
+			tmp.append( head_tag+':' );
+			tmp.extend( translate( node.children[4] ) );
+			tmp.append( "pop(eax);" );
+			tmp.append( "mov(eax,"+node.children[2].val+");" );
+			tmp.extend( fix_continue_break( translate(node.children[6]) , head_tag , end_tag ) );
+			tmp.append( end_tag+':' );
+		else:
+			end_tag = get_random_tag();
+			head_tag = get_random_tag();
+			tmp.extend( translate_leftvalue( node.children[4] ) );
+			tmp.extend([ "pushd(eax);" , "pop(edi);"]);
+			length = typespec[sub_pos+1:-1] ;
+			tmp.extend([ "pushd("+ length +");" , "pop(ecx);" , "xor(esi,esi);"]);
+			tmp.append( "sub(1,esi);" );
+			tmp.append( head_tag+':' );
+			tmp.append( "add(1,esi);" );
+			tmp.append("if ( esi >= ecx ) then");
+			tmp.append("\t"+"jmp "+end_tag+';');
+			tmp.append("endif;");
+			tmp.append( "mov([edi+esi*4],"+node.children[2].val+");" );
+			tmp.extend( fix_continue_break( translate(node.children[6]) , head_tag , end_tag ) );
+			tmp.append("\t"+"jmp "+head_tag+';');
+			tmp.append(end_tag+':');
 	return tmp ;
 
 def translate_compound( node ):
