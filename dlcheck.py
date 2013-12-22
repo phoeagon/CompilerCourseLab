@@ -6,6 +6,7 @@ from dlcheck2 import is_internal
 
 import dlparse 
 
+current_routine_return_type='void';
 Node=dlparse.Node
 
 builtin_type = { 'int':'int' , 'float':'float' , 'char':'char' };
@@ -58,13 +59,17 @@ def check_param_type ( node , func_name , context ):
 		raise Exception( err_msg );
 	param_cnt = tmp2[ '@params-cnt' ]
 	if ( param_cnt != len(ll) ):
+		print "Fatal: "+"Not of same length!\t"+err_msg;
+		exit(0);
 		raise Exception( "Not of same length!\n"+err_msg );
 	for i in range( len(ll) ):
 		if ll[i] != tmp2[ '@params' ][i] :
 			if ( ll[i] not in rng  ) or \
 				( tmp2['@params'][i] not in rng ):# or\
 				#rng[ll[i]] > rng
-				raise Exception( err_msg );
+				print "Fatal: ",  err_msg ;
+				exit(0);
+				#raise Exception( err_msg );
 	return True;
 
 def general_check( node , context ):
@@ -88,6 +93,7 @@ def general_check( node , context ):
 		# Can be corrected later
 
 def check_function_definition( node , context ):
+	global current_routine_return_type
 	if ( node.type=='function_definition' ): #TODO
 		#type_spec  declarator  compound_stat
 		sub_context = copy.copy( context );
@@ -100,6 +106,7 @@ def check_function_definition( node , context ):
 		context[ node.val ] = node.val_type ;
 		context[ '@_func_'+node.val ] = sub_context ; # throw out param list
 		sub_context[ node.val ] = node.val_type ; #enable recursion
+		current_routine_return_type = node.val_type ; #reserve for checks
 		sub_context[ '@_func_'+node.val ] = sub_context ; # throw out param list
 		# compound
 		walk( node.children[2] , sub_context );
@@ -273,6 +280,16 @@ def walk( node , context ):
 	elif (  node.type=='jump_stat' or\
 			 node.type=='stat_list' or\
 			node.type=='compound_stat' ):
+		if node.type=='jump_stat':
+			if node.children[0] == 'return':
+				if len(node.children)>2 and current_routine_return_type=='void':
+					print "Fatal: Cannot return with value for current function (because has no ret value)"
+					exit(0);
+				elif node.children[1].val_type != current_routine_return_type :
+					print "Fatal: Cannot return with value for current function (of return type "\
+						+current_routine_return_type+")"
+					exit(0);
+					
 		if ( node.type == 'compound_stat' ):
 			for i in node.children:
 				walk( i , context );

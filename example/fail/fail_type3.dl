@@ -4,21 +4,13 @@ int $[gcd : int a , int b ]{
     $[ hla_stdout_puti32 : b ];
     $[ hla_stdout_putc : 10 ];
     if (b==0)
-        return a;
+        return "a"; #invalid return type
     return $[gcd : b , a%b ];
 }
 
 int $[main]{
     int x ;
     int y ;
-    $[ hla_stdout_puts : "Please input 2 numbers"];
-    x <- $[ hla_stdin_geti32 ];
-    y <- $[ hla_stdin_geti32 ];
-    //x<- 45;
-    //y<- 12;
-    $[ hla_stdout_puti32 : x ];
-    $[ hla_stdout_puti32 : y ];
-    $[ hla_stdout_putc : 10 ];
     $[ hla_stdout_puti32 : $[ gcd : x , y ] ];
     
 }

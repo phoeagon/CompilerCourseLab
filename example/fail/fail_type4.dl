@@ -1,0 +1,17 @@
+int $[gcd : int a , int b ]{
+    $[ hla_stdout_puti32 : a ];
+    $[ hla_stdout_putc : 32 ];
+    $[ hla_stdout_puti32 : b ];
+    $[ hla_stdout_putc : 10 ];
+    if (b==0)
+        return a;
+    return $[gcd : b , a%b ];
+}
+
+int $[main]{
+    int x ;
+    int y ;
+    $[ hla_stdout_puti32 : $[ gcd : y ] ]; #no enough arguments
+    
+}
+
