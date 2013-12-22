@@ -1,0 +1,51 @@
+int pre[100];
+int mid[100];
+
+void $[work: int pl , int pr , int ml , int mr ]{
+    int  i ;
+    int j ;
+    int len ;
+    int pivot ;
+    pivot <- ml ;
+    if ( pl >= pr )return;
+    if ( ml >= mr )return;
+    for ( i <- ml ; i < mr ; i<-i+1 )
+        if ( mid[i]==pre[pl] )
+            pivot <- i ;
+            
+    len <- pivot - ml ;
+    
+    $[ work : pl+1 , pl+1+len , ml , ml+len ];
+    $[ work : pl+1+len , pr , ml+len+1 , mr ];
+    
+    $[hla_stdout_puti32 : mid[pivot] ];
+    $[hla_stdout_putc : 32 ];
+    
+    
+}
+int $[main]{
+    int x ;
+    int y ;
+    $[ hla_stdout_puts : "Input the size of the binary tree (<20, eg 5)" ];
+    $[ hla_stdout_putc : 10 ];
+    x <- $[ hla_stdin_geti32  ];
+    $[ hla_stdout_puts : "Input the nodes one by one in preorder traversal (eg 1 2 3 4 5)" ];
+    $[ hla_stdout_putc : 10 ];
+    for ( y<- 0 ; y < x ; y <- y + 1 )
+        pre[y] <- $[ hla_stdin_geti32 ];
+    $[ hla_stdout_puts : "Input the nodes one by one in midorder traversal (eg 2 3 1 5 4)" ];
+    $[ hla_stdout_putc : 10 ];
+    for ( y<- 0 ; y < x ; y <- y + 1 )
+        mid[y] <- $[ hla_stdin_geti32 ];
+        
+    for ( y<- 0 ; y < x ; y <- y + 1 )
+        $[hla_stdout_puti32 : pre[y] ];
+    $[hla_stdout_putc : 10 ];
+    for ( y<- 0 ; y < x ; y <- y + 1 )
+        $[hla_stdout_puti32 : mid[y] ];
+    $[hla_stdout_putc : 10 ];
+    
+    $[work : 0 , x , 0 , x ];
+    $[hla_stdout_putc : 10 ];
+}
+
