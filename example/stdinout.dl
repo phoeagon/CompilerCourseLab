@@ -1,0 +1,24 @@
+int numbers[100];
+/* this is an implementation of 
+ * quicksort
+ **/
+int $[input_routine : int n]{
+    int i;
+    for (i<-0;i<n;i<-i+1)
+        numbers[i] <- $[ hla_stdin_geti32 ];
+}
+int $[output_routine : int n]{
+    int i;
+    for (i<-0;i<n;i<-i+1){
+        $[ hla_stdout_puti32 : numbers[i] ];
+        $[ hla_stdout_putc : 32];
+    }
+    $[ hla_stdout_putc : 10];
+}
+int $[main]{
+    $[ hla_stdout_puts : "Please input 5 numbers"];
+    $[ hla_stdout_putc : 10 ];
+    $[input_routine : 5 ];
+    $[output_routine : 5 ];
+}
+
