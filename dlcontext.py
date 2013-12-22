@@ -3,6 +3,8 @@ import dllex
 import ply.yacc as yacc
 import copy 
 
+import pickle
+
 
 import dlparse 
 

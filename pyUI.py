@@ -15,6 +15,8 @@ from PySide.QtGui import QMainWindow, QPushButton, QApplication, QFileDialog, QM
 from ui_test1 import Ui_MainWindow
 from ui_code  import Ui_CodeWindow
 
+import pickle
+
 def json2xml(json_obj, mytag="Node", line_padding=""):
 	result_list = list()
 
@@ -69,7 +71,7 @@ class DomItem(object):
  
 	def node(self):
 		return self.domNode
- 
+
 	def parent(self):
 		return self.parentItem
  
@@ -196,6 +198,150 @@ class DomModel(QtCore.QAbstractItemModel):
  
 		return parentItem.node().childNodes().count()
 
+ignoreList = ['int', 'float', 'char', '@params-cnt']
+
+class SymItem(object):
+	def __init__(self, node, row, parent=None):
+		self.domNode = node
+		# Record the item's location within its parent.
+		self.rowNumber = row
+		self.parentItem = parent
+		self.itemList = None
+		if type(node[1]) == type({}):
+			self.itemList = []
+			for tup in node[1].items():
+				if tup[0] in ignoreList:
+					pass
+				elif tup[0][0:7]!='@fields' and node[0][0:7]=='@struct':
+					pass
+				else:
+					self.itemList.append(tup)
+				
+			self.childItems = {}
+		else:
+			self.childItems = None
+ 
+	def node(self):
+		return self.domNode
+
+	def parent(self):
+		return self.parentItem
+ 
+	def child(self, i):
+		if i in self.childItems:
+			return self.childItems[i]
+ 
+		if i >= 0 and i < len(self.itemList):
+			childNode = self.itemList[i]
+			if childNode[0][0:7] != "@_func_" or self.domNode[0][0:7] != "@_func_":
+				childItem = SymItem(childNode, i, self)
+			else:
+				childItem = SymItem((childNode[0], childNode[0]), i, self)
+			self.childItems[i] = childItem
+			return childItem
+ 
+		return None
+ 
+	def row(self):
+		return self.rowNumber
+
+	def childCount(self):
+		if type(self.domNode[1]) == type({}):
+			return len(self.domNode[1].items())
+		else:
+			return 0
+ 
+ 
+class SymModel(QtCore.QAbstractItemModel):
+	def __init__(self, document, parent=None):
+		super(SymModel, self).__init__(parent)
+ 
+		self.domDocument = document
+ 
+		self.rootItem = SymItem(self.domDocument, 0)
+ 
+	def columnCount(self, parent):
+		return 2
+ 
+	def data(self, index, role):
+		if not index.isValid():
+			return None
+ 
+		if role != QtCore.Qt.DisplayRole:
+			return None
+ 
+		item = index.internalPointer()
+ 
+		node = item.node()
+ 
+		if index.column() == 0:
+			return node[0]
+ 
+		elif index.column() == 1:
+			if type(node[1]) != type({}):
+				return node[1]
+			else:
+				return ""
+ 
+		return None
+ 
+	def flags(self, index):
+		if not index.isValid():
+			return QtCore.Qt.NoItemFlags
+ 
+		return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+ 
+	def headerData(self, section, orientation, role):
+		if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
+			if section == 0:
+				return "Name"
+ 
+			if section == 1:
+				return "Attributes"
+ 
+			if section == 2:
+				return "Value"
+ 
+		return None
+ 
+	def index(self, row, column, parent):
+		if not self.hasIndex(row, column, parent):
+			return QtCore.QModelIndex()
+ 
+		if not parent.isValid():
+			parentItem = self.rootItem
+		else:
+			parentItem = parent.internalPointer()
+ 
+		childItem = parentItem.child(row)
+		if childItem:
+			return self.createIndex(row, column, childItem)
+		else:
+			return QtCore.QModelIndex()
+ 
+	def parent(self, child):
+		if not child.isValid():
+			return QtCore.QModelIndex()
+ 
+		childItem = child.internalPointer()
+		parentItem = childItem.parent()
+ 
+		if not parentItem or parentItem == self.rootItem:
+			return QtCore.QModelIndex()
+ 
+		return self.createIndex(parentItem.row(), 0, parentItem)
+ 
+	def rowCount(self, parent):
+		if parent.column() > 0:
+			return 0
+ 
+		if not parent.isValid():
+			parentItem = self.rootItem
+		else:
+			parentItem = parent.internalPointer()
+ 
+		return parentItem.childCount()
+
 class CodeWindow(QMainWindow, Ui_CodeWindow):
 	def __init__( self , html , parent=None):
 		super( CodeWindow , self).__init__(parent)
@@ -305,64 +451,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		pass
 	def showSymbolTable(self):
 		self.useTree()
-		os.system("python dlcontext.py < "+ self.fileName + "| tail -n +3 > symTab.json")
-		str = ""
-		try:
-			with open("symTab.json", 'r') as f:
-				str = f.read()
-				str = str.replace("'", '"')
-				str = str.replace("@", "")
-				str = str.replace("{...}", '""')
-				
-				#very tricky code dealing with params
-				#not work if more than 6 params
-				str = str.replace("0:", '"num#0":')
-				str = str.replace("1:", '"num#1":')
-				str = str.replace("2:", '"num#2":')
-				str = str.replace("3:", '"num#3":')
-				str = str.replace("4:", '"num#4":')
-				str = str.replace("5:", '"num#5":')
-
-				#yet some other tricky codes
-				str = str.replace("0,", '"0",')
-				str = str.replace("1,", '"1",')
-				str = str.replace("2,", '"2",')
-				str = str.replace("3,", '"3",')
-				str = str.replace("4,", '"4",')
-				str = str.replace("5,", '"5",')
-				
-				str = str.replace(":", ":\n")
-				str = str.replace(",", ",\n")
-				print str
-				j = json.loads(str)
-				text_file = open("symTab.xml", "w")
-				text_file.write(json2xml(j))
-				text_file.close()
-		except Exception as e:
-			print e
-			msgBox = QMessageBox()
-			msgBox.setText("Syntax Error.")
-			msgBox.exec_()
-			self.useConsole()
-			with open("symTab.json", 'r') as f:
-				self.consoleField.setPlainText( f.read() )
-			return
-			
-		fileName = "symTab.xml"
-		if False:
-			f = QtCore.QFile(fileName)
-			if f.open(QtCore.QIODevice.ReadOnly):
-				document = QtXml.QDomDocument()
-				if document.setContent(f):
-					newModel = DomModel(document, self)
-					self.treeView.setModel(newModel)
-					self.model = newModel
-					self.xmlPath = fileName
-				f.close()
-		self.useConsole()
-		self.consoleField.setPlainText(str)
+		os.system("python dlcheck.py --serializeTheOBJ < "+ self.fileName + " | grep -n -P '(Syntax error)|(Fatal)' > symTab")
+		with open("symTab", 'r') as f:
+			tmp = f.read()
+			if len(tmp) != 0:
+				msgBox = QMessageBox()
+				msgBox.setText("Panic!\n"+tmp)
+				msgBox.exec_()
+				return
+		inputFile = open("symTab.dump", 'rb')
+		context = pickle.load(inputFile)
+		inputFile.close()
+		print context
+		
+		if True:
+			newModel = SymModel(("root", context), self)
+			self.treeView.setModel(newModel)
+			self.model = newModel
+			self.xmlPath = fileName
+		#self.useConsole()
+		#self.consoleField.setPlainText(str)
 		pass
 	def codeGen(self):
+		print "hello world"
 		pass
 	def close(self):
 		if self.codeFrame is not None:

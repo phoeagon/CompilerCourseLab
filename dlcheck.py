@@ -6,6 +6,8 @@ from dlcheck2 import is_internal
 
 import dlparse 
 
+import pickle
+
 hla_return_type = {'stralloc':'string','stdin_gets':'string'};
 
 current_routine_return_type='void';
@@ -398,6 +400,8 @@ if __name__ == "__main__":
 			outputFormat = 'xml'
 		elif arg=="--pobj":
 			outputFormat = 'pobj'
+		elif arg=="--serializeTheOBJ":
+			outputFormat = 'serial'
     
 	from dlang import *
 	import dlang
@@ -418,3 +422,7 @@ if __name__ == "__main__":
 	elif outputFormat == 'pobj':
 		print "\n"
 		print obj
+	elif outputFormat == 'serial':
+		output = open('symTab.dump', 'wb')
+		pickle.dump(context, output)
+		output.close()
