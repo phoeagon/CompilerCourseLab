@@ -23,9 +23,13 @@ def translate_jump_stat(node):
 	if node.children[0]=='return':
 		if len(node.children)==2:
 			#return ;
-			return ["ret();"]
+			return ["jmp epilog;"]
 		else:
-			pass
+			# return exp ;
+			tmp = [];
+			tmp.extend( translate(node.children[1]) ) ;
+			tmp.append( "jmp epilog;" );
+			return tmp ;
 	elif node.children[0]=='break':
 		return ["brk"];#to be fixed at upper layer
 	elif node.children[0]=='continue':
@@ -432,8 +436,14 @@ def output_procedure( prototype , var , body , procedure_name ):
 	tmp.append( var );
 	tmp.append( "begin "+procedure_name+";" );
 	tmp.extend( output_procedure_body(body) );
+	tmp.append( "epilog_"+procedure_name+":" );
+	tmp.append( "pop(eax);" );
 	tmp.append( "end "+procedure_name+";" );
-
+	
+	#fix return
+	for i in range(len( tmp )):
+		if tmp[i] == '\t'+'jmp epilog;': 
+			tmp[i] = 'jmp epilog_'+procedure_name +';';
 	#for i in tmp:
 	#	print i
 

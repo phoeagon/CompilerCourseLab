@@ -1,6 +1,6 @@
 program prog;
 static
-	numbers:int32[100];
+	numbers:int32;
 	left:int32;
 procedure main;@nodisplay;
 
@@ -55,7 +55,7 @@ begin q_sort;
 	xor(eax,eax);
 	endif;
 	push (eax);
-	je tag05B03N;
+	je tag6GBX99;
 	push (numbers);
 	push (right);
 	pop(ebx);
@@ -85,7 +85,7 @@ begin q_sort;
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je tagTO4V62;
+	je tagL1WJB8;
 	lea( eax,right);
 	push(eax);
 	push (right);
@@ -99,7 +99,7 @@ begin q_sort;
 	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tagTO4V62 :
+	tagL1WJB8 :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -165,7 +165,7 @@ begin q_sort;
 	pop(eax);
 	and (ebx, eax);
 	push (eax);
-	je tagRNEZCZ;
+	je tagXZQKPB;
 	lea( eax,left);
 	push(eax);
 	push (left);
@@ -179,7 +179,7 @@ begin q_sort;
 	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tagRNEZCZ :
+	tagXZQKPB :
 	push (left);
 	push (right);
 	pop(ebx);
@@ -216,7 +216,7 @@ begin q_sort;
 	mov ( ebx, [eax] ); 
 	push (eax);
 	pop(eax);
-	tag05B03N :
+	tag6GBX99 :
 	push (left);
 	push (pivot);
 	pop(ebx);
