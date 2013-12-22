@@ -55,13 +55,14 @@ def translate_postfix_exp(node):
 		#FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
 		tmp = ["push(ebx);","push(ecx);","push(edx);","push(esi);","push(edi);"];
 		if is_internal(node.children[2].val):
+			# internal ones
 			routine = node.children[2].val[4:]
 			routine = routine.replace('_','.');
 			tmp.extend( translate_argument_exp_list( node.children[4] ) );
 			tmp.append( 'call '+routine +';' );
 		else:
 			tmp.extend( translate_argument_exp_list( node.children[4] ) );
-			tmp.extend(["call("+node.children[2].val+");" ]);
+			tmp.extend(["call("+"_func_"+node.children[2].val+");" ]);
 			# I still don't know why this is not needed
 			#stack_back=str(4*count_argument_exp_list( node.children[4] ));
 			#tmp.append("add("+stack_back+",esp);");
@@ -70,7 +71,7 @@ def translate_postfix_exp(node):
 		return tmp
 	elif len(node.children)==4 and node.children[0]=='$':
 		#FUNCALL LBRACKET  ident  RBRACKET
-		return [node.children[2].val+"();","push(eax);"];
+		return ["_func_"+node.children[2].val+"();","push(eax);"];
 	return [];
 
 def translate_argument_exp_list(node):
@@ -99,7 +100,7 @@ def translate_function_definition (node,context):
 	#print context
 	result=""
 	func_name = node.val
-	result="procedure "+func_name;
+	result="procedure "+"_func_"+func_name;
 	tmp = '@_func_'+func_name
 	if tmp not in context:
 		print "fuck!!!!!"
@@ -446,11 +447,11 @@ def output_procedure( prototype , var , body , procedure_name ):
 	tmp = [];
 	tmp.append( prototype ) ;
 	tmp.append( var );
-	tmp.append( "begin "+procedure_name+";" );
+	tmp.append( "begin "+"_func_"+procedure_name+";" );
 	tmp.extend( output_procedure_body(body) );
 	tmp.append( "epilog_"+procedure_name+":" );
 	tmp.append( "pop(eax);" );
-	tmp.append( "end "+procedure_name+";" );
+	tmp.append( "end "+"_func_"+procedure_name+";" );
 	
 	#fix return
 	for i in range(len( tmp )):
@@ -498,5 +499,5 @@ def translate_everything():
 	for line in procedure_code:
 		print line
 	print "begin "+tag+";"
-	print "\t call(main);"
+	print "\t call(_func_main);"
 	print "end "+tag+";"
