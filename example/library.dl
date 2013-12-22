@@ -24,8 +24,24 @@ int $[output_routine]{
 
 
 int $[main]{
+    int y;
+    $[ hla_stdout_puts : "Random Number Test:"];
+    $[ hla_stdout_putc : 10 ];
     $[hla_rand_randomize];
     $[input_routine];
     $[output_routine];
+
+
+    $[ hla_stdout_putc : 10 ];
+    $[ hla_stdout_puts : "Hexidecimal Test:"];
+    $[ hla_stdout_putc : 10 ];
+    $[ hla_stdout_puts : "Input a hexidecimal number: (eg 4e)"];
+    $[ hla_stdout_putc : 10 ];
+    y<- $[ hla_stdin_geth32 ];
+    $[ hla_stdout_puth32 : y ];
+    $[ hla_stdout_puts : "(h) is decimal "];
+    $[ hla_stdout_puti32 : y ];
+    $[ hla_stdout_putc : 10 ];
+    
 }
 
