@@ -99,6 +99,7 @@ def check_function_definition( node , context ):
 		node.val_type = node.children[0].val ;
 		# declarator
 		walk( node.children[1] , sub_context );
+		
 		node.val = node.children[1].val ;
 		context[ node.val ] = node.val_type ;
 		context[ '@_func_'+node.val ] = sub_context ; # throw out param list

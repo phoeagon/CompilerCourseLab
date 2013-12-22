@@ -1,0 +1,54 @@
+int numbers[100];
+int size;
+int found ;
+
+int $[output_routine : int n]{
+    int i;
+    for (i<-0;i<n;i<-i+1){
+        $[ hla_stdout_puti32 : numbers[i] ];
+        $[ hla_stdout_putc : 32];
+    }
+    $[ hla_stdout_putc : 10];
+}
+void $[ solve : int depth ]{
+    int x ;
+    int y ;
+    int success ;
+    if ( found )
+        return ;
+    for ( x<- 1 ; x<= size ; x<-x+1 ){
+        numbers[depth] <- x ;
+        success <- 1 ;
+        for ( y <- 0 ; y < depth ; y<-y+1 ){
+            if ( (numbers[y]==numbers[depth] ) ||
+                 ((numbers[y]-x)==(y-depth) ) ||
+                 ((numbers[y]-x)==(depth-y) ) 
+                ){
+                success <- 0 ;
+                break;
+                }
+        }
+        if ( success ){
+            if ( depth == size - 1 ){
+                $[output_routine : size ] ;
+                found <- 1 ;
+            }else
+                $[ solve : depth+1 ];
+        }
+        numbers[depth] <- 0 ;        
+    }
+}
+
+int $[main]{
+    found <- 0 ;
+    $[ hla_stdout_puts : "Please set the problem size (eg: 5)"];
+    $[ hla_stdout_putc : 10 ];
+
+    size <- $[ hla_stdin_geti32 ];
+    $[ solve : 0 ];
+    if (found==0){    
+        $[ hla_stdout_puts : "No solution found"];
+        $[ hla_stdout_putc : 10 ];
+    }        
+}
+
