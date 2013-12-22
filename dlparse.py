@@ -328,7 +328,8 @@ def p_const_3(t):
 
 def p_const_4(t):
 	'''const		:  SCONST'''
-	t[0]=Node("const",'float',[ t[1] ])
+	t[0]=Node("const",'string',[ t[1] ])
+	t[0].val=t[1]
 	
 def p_empty(t):
 	'empty : '

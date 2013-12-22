@@ -188,6 +188,10 @@ def translate_const( node ):
 		tmp.append("pushd("+node.val+");");
 	elif ( node.val_type=='float'):
 		tmp.append("pushf("+node.val+");");
+	elif ( node.val_type=='string'):
+		random_tag = get_random_tag("str");
+		add_literal( node.val , random_tag );
+		tmp.append("pushd("+random_tag+");");
 	return tmp
 
 def translate_decl( node ):
@@ -462,22 +466,28 @@ def output_procedure( prototype , var , body , procedure_name ):
 
 def translate_static( context ):
 	tmp = [];
-	cnt = 0 ;
 	for ele in context:
 		if ele[0]=='@' or ele in ('int','float','char'):
 			continue;
 		if ('@_func_'+ele) in context:
 			continue;
-		if cnt == 0 :
-			tmp.append("static");
-		cnt = cnt+1;
 		tmp.append( "\t"+ele +":"+ get_type(context[ele]) + ";");
 
 	#for i in tmp:
 	#	print i
 	global global_code
+	if len(global_code)==0:
+		global_code.append("static");
 	global_code.extend( tmp );
 	return tmp ;
+
+
+def add_literal( content , random_tag ):
+	global global_code
+	if len(global_code)==0:
+		global_code.append("static");
+	global_code.append( "\t"+random_tag +": string := "+ content +";");
+	
 
 def translate_everything():
 	tag=get_random_tag("prog");
