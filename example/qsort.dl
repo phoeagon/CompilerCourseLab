@@ -1,0 +1,52 @@
+int numbers[100];
+/* this is an implementation of 
+ * quicksort
+ **/
+int $[input_routine : int n]{
+    int i;
+    for (i<-0;i<n;i<-i+1)
+        numbers[i] <- $[ hla_stdin_geti32 ];
+}
+int $[output_routine : int n]{
+    int i;
+    for (i<-0;i<n;i<-i+1){
+        $[ hla_stdout_puti32 : numbers[i] ];
+        $[ hla_stdout_putc : 32];
+    }
+    $[ hla_stdout_putc : 10];
+}
+void $[ q_sort : int left, int right]{//quicksort
+	int pivot;
+	int l_hold;
+	int r_hold;
+    int tmp ;
+	l_hold <- left;
+	r_hold <- right;
+	pivot <- numbers[left];
+	while (l_hold <= r_hold) {
+		while (numbers[l_hold] < pivot)
+			l_hold <- l_hold + 1;
+		while (numbers[r_hold] > pivot)
+			r_hold <- r_hold - 1;
+		if (l_hold <= r_hold){
+			tmp <- numbers[r_hold];
+            numbers[r_hold] <- numbers[l_hold];
+            numbers[l_hold] <- tmp;
+			r_hold <- r_hold - 1;
+            l_hold <- l_hold + 1;
+		}
+	}
+	if (left < r_hold)
+		$[ q_sort : left, r_hold];
+	if (l_hold < right)
+		$[ q_sort : l_hold, right];
+}
+
+int $[main]{
+    $[ hla_stdout_puts : "Please input 5 numbers"];
+    $[ hla_stdout_putc : 10 ];
+    $[input_routine : 5 ];
+    $[q_sort : 0 , 5-1 ];
+    $[output_routine : 5 ];
+}
+
