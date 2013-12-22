@@ -1,0 +1,9 @@
+
+
+int $[main]{
+    $[ hla_stdout_puts : "Before breakpoint"];    
+    $[ hla_stdout_putc : 10];
+    $[hla_brkpt]; //breakpoint
+    $[ hla_stdout_puts : "After breakpoint"];  
+    $[ hla_stdout_putc : 10];
+}

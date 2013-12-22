@@ -555,7 +555,7 @@ def translate_everything():
 	tag=get_random_tag("prog");
 	print "program "+tag+";"
 	print "#include( \"stdlib.hhf\" );"
-	print"""procedure syscall(var a:int32 ; b:int32 ; c:int32 ; d:int32 ; s: int32 ; i:int32 );@nodisplay;
+	print """procedure syscall(var a:int32 ; b:int32 ; c:int32 ; d:int32 ; s: int32 ; i:int32 );@nodisplay;
 	begin syscall;
 		mov(a,eax);
 		mov(b,ebx);
@@ -565,6 +565,12 @@ def translate_everything():
 		mov(s,esi);
 		int(128); //0x80
 	end syscall;
+
+	procedure brkpt;@noframe;
+	begin brkpt;
+		int(3);
+		ret();
+	end brkpt;
 	"""
 	for line in global_typedef:
 		print line
