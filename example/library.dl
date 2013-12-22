@@ -1,0 +1,31 @@
+int numbers[10];
+int size;
+int found ;
+
+int $[input_routine]{
+    int i;
+    for (i<-0;i<10;i<-i+1)
+        numbers[i] <- $[hla_rand_uniform] % 100;
+}
+
+int $[output_routine]{
+    int i;
+    int y;
+    y<-0;
+    foreach( i in numbers ){
+        $[ hla_stdout_puti32 : i ];
+        $[ hla_stdout_putc : 32 ];
+        y<-y+1;
+    }
+    $[ hla_stdout_putc : 10 ];
+    $[ hla_stdout_puti32 : y ];
+    $[ hla_stdout_putc : 10 ];
+}
+
+
+int $[main]{
+    $[hla_rand_randomize];
+    $[input_routine];
+    $[output_routine];
+}
+

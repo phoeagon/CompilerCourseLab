@@ -1,40 +1,13 @@
 program progKAYU51;
 #include( "stdlib.hhf" );
-static
-	str2H80RW: string := "Hello World!";
 procedure main;@nodisplay;
-
 begin main;
-	push(ebx);
-	push(ecx);
-	push(edx);
-	push(esi);
-	push(edi);
-	pushd(str2H80RW);
-	call stdout.puts;
-	pop(edi);
-	pop(esi);
-	pop(edx);
-	pop(ecx);
-	pop(ebx);
-	push(eax);
-	pop(eax);
-	push(ebx);
-	push(ecx);
-	push(edx);
-	push(esi);
-	push(edi);
+	rand.uniform();
+	call stdout.puti32;
 	pushd(10);
 	call stdout.putc;
-	pop(edi);
-	pop(edx);
-	pop(ecx);
-	pop(ebx);
-	push(eax);
-	pop(eax);
-epilog_main:
-pop(eax);
 end main;
 begin progKAYU51;
+	rand.randomize();
 	 call(main);
 end progKAYU51;
