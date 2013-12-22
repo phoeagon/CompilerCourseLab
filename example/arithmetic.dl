@@ -15,6 +15,8 @@ int $[main]{
     $[hla_stdout_puti32:10%3];
     $[hla_stdout_putc:32];
     $[hla_stdout_puti32:1+10*3];
+    $[hla_stdout_putc:32];
+    $[hla_stdout_puti32:(1+10)*3];
     $[hla_stdout_putc:10];
 }
 
