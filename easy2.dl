@@ -4,10 +4,20 @@ int numbers[100];
  **/
 int left;
 int $[main]{
-    $[hla_stdout_puti32:left];
+    $[hla_stdout_puti32:10+3];
+    $[hla_stdout_putc:32];
+    $[hla_stdout_puti32:10-3];
+    $[hla_stdout_putc:32];
+    $[hla_stdout_puti32:10*3];
+    $[hla_stdout_putc:32];
+    $[hla_stdout_puti32:10/3];
+    $[hla_stdout_putc:32];
+    $[hla_stdout_puti32:10%3];
+    $[hla_stdout_putc:32];
+    $[hla_stdout_puti32:1+10*3];
+    $[hla_stdout_putc:10];
 }
 int $[foobar: int a]{
-    $[hla_stdout_puti32 : a ];
     return 3;
     if ( a > 0 )
         $[foobar : a-1];    

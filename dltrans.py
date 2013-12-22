@@ -301,10 +301,16 @@ def translate_binary_exp( node ):
 	elif node.val == '*':
 		tmp.append("imul(ebx, eax);");
 	elif node.val == '/':
-		tmp.append("extend(edx);")
+		#tmp.append("extend(edx);")
 		tmp.append("xor (edx,edx);")
 		tmp.append("idiv(ebx);")
-		tmp.append("pop(edx);")
+		#tmp.append("pop(edx);")
+	elif node.val == '%':
+		#tmp.append("extend(edx);")
+		tmp.append("xor (edx,edx);")
+		tmp.append("idiv(ebx);")
+		tmp.append("mov(edx,eax);")
+		#tmp.append("pop(edx);")
 	elif node.val == '||':
 		tmp.append("or(ebx, eax);");
 	elif node.val == '&&':
