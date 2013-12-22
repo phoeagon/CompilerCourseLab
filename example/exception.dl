@@ -1,0 +1,19 @@
+int numbers[100];
+int left;
+
+int $[test: int a]{
+    $[hla_stdout_puti32: a];
+    $[hla_stdout_putc: 10];
+    if ( a<=0 )
+        throw 1;
+    $[test : a-1];    
+}
+int $[main]{
+    try{
+        $[ test : 5 ];
+    }catch 1:
+    {
+        $[hla_stdout_puts: "BOOOOM!"];
+        $[hla_stdout_putc: 10];
+    }
+}
