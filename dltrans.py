@@ -33,6 +33,8 @@ def translate_jump_stat(node):
 			tmp.extend( translate(node.children[1]) ) ;
 			tmp.append( "jmp epilog;" );
 			return tmp ;
+	elif node.children[0]=='throw':
+		return ["raise("+node.children[1]+");"];
 	elif node.children[0]=='break':
 		return ["brk"];#to be fixed at upper layer
 	elif node.children[0]=='continue':
@@ -219,6 +221,7 @@ def translate_selection_stat( node ):
 	tmp = [] ;
 	#IF  LPAREN  exp  RPAREN  stat
 	#IF  LPAREN  exp  RPAREN  stat ELSE  stat
+	#TRY stat CATCH ICONST SEMI stat
 	if len(node.children)==5:
 		rand_tag = get_random_tag();
 		tmp.extend( translate(node.children[2]) ); #condition
@@ -234,6 +237,12 @@ def translate_selection_stat( node ):
 		tmp.extend( translate(node.children[4]) );#to write
 		tmp.append( rand_tag+" :" );
 		tmp.extend( translate(node.children[6]) );#to write
+	elif len(node.children)==6 and node.children[0]=='try':
+		tmp.append("try");
+		tmp.extend( translate(node.children[1]) );#to write
+		tmp.append("exception("+node.children[3]+")");
+		tmp.extend( translate(node.children[5]) );#to write
+		tmp.append("endtry;");
 	return tmp
 
 def fix_continue_break( code , head_flag , end_flag ):

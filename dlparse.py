@@ -181,7 +181,9 @@ def p_stat_list(t):
 
 def p_selection_stat(t):
 	'''selection_stat	: IF  LPAREN  exp  RPAREN  stat
-				| IF  LPAREN  exp  RPAREN  stat ELSE  stat'''
+				| IF  LPAREN  exp  RPAREN  stat ELSE  stat
+				| TRY stat CATCH ICONST COLON stat
+				'''
 	if ( collapse(t) ):
 		return
 	t[0]=Node("selection_stat","", t[1:] )
@@ -199,7 +201,9 @@ def p_jump_stat(t):
 	'''jump_stat	: CONTINUE  SEMI
 				| BREAK  SEMI
 				| RETURN  exp  SEMI
-				| RETURN	 SEMI'''
+				| RETURN	 SEMI
+				| THROW ICONST SEMI
+				'''
 	if ( collapse(t) ):
 		return
 	t[0]=Node("jump_stat","", t[1:] )

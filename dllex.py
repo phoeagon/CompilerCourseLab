@@ -9,7 +9,7 @@ reserved = (
     'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO',
     'ELSE', 'FLOAT', 'FOREACH', 'FOR', 'GOTO', 'IN', 'IF', 'INT','STRING',
     'RETURN', 'SIZEOF', 'STATIC', 'STRUCT', 
-      'VOID',  'WHILE', 'DEFINE'
+      'VOID',  'WHILE', 'DEFINE','TRY','CATCH' ,'THROW'
     )
     
 tokens = reserved + (
