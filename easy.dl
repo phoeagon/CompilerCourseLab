@@ -1,15 +1,19 @@
 int numbers[100];
 int left;
 
-int $[foobar: int a]{
-    $[hla_stdout_puti32 : a ];
-    return 3;
-    if ( a > 0 )
-        $[foobar : a-1];    
-    $[hla_stdout_puti32 : a ];
-}
+
 int $[main]{
-    $[hla_stdout_puti32 : $[foobar:5] ];
+    int x;
+    x<-5;
+    while (x>=0){
+        numbers[x]<-x+1;
+        x<-x-1; ;
+    }
+    x<-5;
+    while (x>=0){
+        $[hla_stdout_puti32 : numbers[x] ];
+        x<-x-1; ;
+    }
 }
 /*
 int $[main]{

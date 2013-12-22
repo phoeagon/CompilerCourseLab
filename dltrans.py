@@ -43,10 +43,10 @@ def translate_postfix_exp(node):
 	elif len(node.children)==4 and node.children[0]<>'$':
 		# a [ id ]
 		tmp = [];
-		tmp.extend( translate( node.children[0] ) )
+		tmp.extend( translate_leftvalue( node.children[0] ) )
 		tmp.extend( translate( node.children[2] ) )
 		tmp.extend( [ "pop(ebx);", "pop(eax);" ] )
-		tmp.extend( ["add(ebx,eax);", "pushd([eax]);"] )
+		tmp.extend( [ "pushd([eax+ebx*4]);"] )
 		return tmp
 	elif len(node.children)==3:
 		#a->id
@@ -310,32 +310,32 @@ def translate_binary_exp( node ):
 	elif node.val == '&&':
 		tmp.append("and (ebx, eax);");
 	elif node.val == '>':
-		tmp.append("if( eax>ebx ) then");
+		tmp.append("if( (type int32 eax)>(type int32 ebx) ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");
 	elif node.val == '>=':
-		tmp.append("if( eax>=ebx ) then");
+		tmp.append("if( (type int32 eax)>=(type int32 ebx) ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");	
 	elif node.val == '<':
-		tmp.append("if( eax<=ebx ) then");
+		tmp.append("if( (type int32 eax)<=(type int32 ebx) ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");
 		
 	elif node.val == '<=':
-		tmp.append("if( eax<=ebx ) then");
+		tmp.append("if( (type int32 eax)<=(type int32 ebx) ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");		
 	elif node.val == '==':
-		tmp.append("if( eax==ebx ) then");
+		tmp.append("if( (type int32 eax)==(type int32 ebx) ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
@@ -367,7 +367,7 @@ def translate_leftvalue( node ):
 		tmp.extend( translate_leftvalue( node.children[0] ) )
 		tmp.extend( translate( node.children[2] ) )
 		tmp.extend( [ "pop(ebx);", "pop(eax);" ] )
-		tmp.extend( ["add(ebx,eax);", "push(eax);"] )
+		tmp.extend( ["lea(eax,[eax+ebx*4]);", "push(eax);"] )
 		return tmp;
 	else:
 		for i in range(len(node.children)):
@@ -386,6 +386,8 @@ def translate( node ):
 	elif node.type=='postfix_exp':
 		return translate_postfix_exp(node);
 	elif node.type =="exp_stat":
+		if node.children[0]==';':
+			return []; #fix empty statement
 		tmp=translate(node.children[0]);
 		tmp.append("pop(eax);"); #clear last result
 		return tmp;

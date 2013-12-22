@@ -6,7 +6,13 @@ int left;
 int $[main]{
     $[hla_stdout_puti32:left];
 }
-
+int $[foobar: int a]{
+    $[hla_stdout_puti32 : a ];
+    return 3;
+    if ( a > 0 )
+        $[foobar : a-1];    
+    $[hla_stdout_puti32 : a ];
+}
 void $[ q_sort : int left, int right]{//quicksort
 	int pivot;
 	int l_hold;
