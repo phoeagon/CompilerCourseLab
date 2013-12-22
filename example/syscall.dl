@@ -5,6 +5,5 @@ int left;
 int $[main]{
     $[hla_syscall:2,0,0,0,0,0]; //fork
     $[hla_syscall:2,0,0,0,0,0]; //fork
-    $[hla_syscall:4,1,"Hello",5,0,0]; //write
-    $[hla_stdout_putc: 32];
+    $[hla_syscall:4,1,"Hello\n",6,0,0]; //write
 }

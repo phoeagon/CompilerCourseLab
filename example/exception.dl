@@ -13,7 +13,6 @@ int $[main]{
         $[ test : 5 ];
     }catch 1:
     {
-        $[hla_stdout_puts: "BOOOOM!"];
-        $[hla_stdout_putc: 10];
+        $[hla_stdout_puts: "BOOOOM!\n"];
     }
 }

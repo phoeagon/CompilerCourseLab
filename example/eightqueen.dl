@@ -41,14 +41,12 @@ void $[ solve : int depth ]{
 
 int $[main]{
     found <- 0 ;
-    $[ hla_stdout_puts : "Please set the problem size (eg: 5)"];
-    $[ hla_stdout_putc : 10 ];
+    $[ hla_stdout_puts : "Please set the problem size (eg: 5)\n"];
 
     size <- $[ hla_stdin_geti32 ];
     $[ solve : 0 ];
     if (found==0){    
-        $[ hla_stdout_puts : "No solution found"];
-        $[ hla_stdout_putc : 10 ];
+        $[ hla_stdout_puts : "No solution found\n"];
     }        
 }
 

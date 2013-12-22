@@ -1,6 +1,5 @@
 
 int $[main]{
-    $[hla_stdout_puts : "Hello World!" ];
-    $[hla_stdout_putc : 10 ]; //return
+    $[hla_stdout_puts : "Hello World!\n" ];
 }
 

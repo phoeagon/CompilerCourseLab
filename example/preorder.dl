@@ -29,12 +29,10 @@ int $[main]{
     $[ hla_stdout_puts : "Input the size of the binary tree (<20, eg 5)" ];
     $[ hla_stdout_putc : 10 ];
     x <- $[ hla_stdin_geti32  ];
-    $[ hla_stdout_puts : "Input the nodes one by one in preorder traversal (eg 1 2 3 4 5)" ];
-    $[ hla_stdout_putc : 10 ];
+    $[ hla_stdout_puts : "Input the nodes one by one in preorder traversal (eg 1 2 3 4 5)\n" ];
     for ( y<- 0 ; y < x ; y <- y + 1 )
         pre[y] <- $[ hla_stdin_geti32 ];
-    $[ hla_stdout_puts : "Input the nodes one by one in midorder traversal (eg 2 3 1 5 4)" ];
-    $[ hla_stdout_putc : 10 ];
+    $[ hla_stdout_puts : "Input the nodes one by one in midorder traversal (eg 2 3 1 5 4)\n" ];
     for ( y<- 0 ; y < x ; y <- y + 1 )
         mid[y] <- $[ hla_stdin_geti32 ];
         
