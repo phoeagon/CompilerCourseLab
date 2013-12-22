@@ -13,7 +13,7 @@ class Ui_CodeWindow(object):
 	def setContent( self , html ) :
 		self.consoleField.setHtml(html)
 		
-	def setupUi(self, MainWindow):
+	def setupUi(self, MainWindow, title="Code"):
 		MainWindow.setObjectName("CodeWindow")
 		MainWindow.resize(687, 638)
 		self.centralwidget = QtGui.QWidget(MainWindow)
@@ -24,10 +24,10 @@ class Ui_CodeWindow(object):
 		self.consoleField.setReadOnly(True)
 		self.consoleField.setObjectName("consoleField")
 		MainWindow.setCentralWidget(self.consoleField)
-		self.retranslateUi(MainWindow)
+		self.retranslateUi(MainWindow, title)
 
-	def retranslateUi(self, MainWindow):
-		MainWindow.setWindowTitle(QtGui.QApplication.translate("Code", "Code", None, QtGui.QApplication.UnicodeUTF8))
+	def retranslateUi(self, MainWindow, title):
+		MainWindow.setWindowTitle(QtGui.QApplication.translate("Code", title, None, QtGui.QApplication.UnicodeUTF8))
 		self.consoleField.setHtml(QtGui.QApplication.translate("Code", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

@@ -343,9 +343,9 @@ class SymModel(QtCore.QAbstractItemModel):
 		return parentItem.childCount()
 
 class CodeWindow(QMainWindow, Ui_CodeWindow):
-	def __init__( self , html , parent=None):
+	def __init__( self , html , parent=None, title="Code"):
 		super( CodeWindow , self).__init__(parent)
-		self.setupUi(self)
+		self.setupUi(self, title)
 		self.setContent( html )
 	def close( self ):
 		super( CodeWindow , self ).close()
@@ -357,6 +357,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.setupUi(self)
 		self.fileName = ""
 		self.codeFrame = None
+		self.asmFrame = None
 		self.grammarButt.setEnabled(False)
 		self.semanticButt.setEnabled(False)
 		self.symbolTable.setEnabled(False)
@@ -468,16 +469,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			newModel = SymModel(("root", context), self)
 			self.treeView.setModel(newModel)
 			self.model = newModel
-			self.xmlPath = fileName
 		#self.useConsole()
 		#self.consoleField.setPlainText(str)
 		pass
 	def codeGen(self):
-		print "hello world"
+		f = os.popen("python ./dlcheck2.py <" + self.fileName + " | tail -n +3")
+		assembly = f.read()
+		assembly = assembly.replace("\n", "<br/>").replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+		
+		self.useConsole()
+		self.consoleField.setHtml("")
+		if self.asmFrame is None:
+			self.asmFrame = CodeWindow("", self, "ASM")
+		self.asmFrame.setContent(assembly)
+		self.asmFrame.show()
 		pass
 	def close(self):
 		if self.codeFrame is not None:
 			self.codeFrame.close();
+		if self.asmFrame is not None:
+			self.asmFrame.close();
 		super(MainWindow, self).close()
 	   
 if __name__ == '__main__':
