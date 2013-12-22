@@ -108,10 +108,17 @@ def check_function_definition( node , context ):
 		walk( node.children[1] , sub_context );
 		node.val = node.children[1].val ;
 		context[ node.val ] = node.val_type ;
+		
+		if ('@_func_'+node.val) not in sub_context:
+			if ( node.val ) in sub_context:
+				print "Fatal: Duplicate identifier "+node.val ;
+				exit(0);
+		
 		context[ '@_func_'+node.val ] = sub_context ; # throw out param list
 		sub_context[ node.val ] = node.val_type ; #enable recursion
 		current_routine_return_type = node.val_type ; #reserve for checks
 		sub_context[ '@_func_'+node.val ] = sub_context ; # throw out param list
+		
 		# compound
 		walk( node.children[2] , sub_context );
 		if codegen:
@@ -315,6 +322,20 @@ def walk( node , context ):
 				node.children[0].val_type == "int" ):
 					print "Fatal: Incompatible type between string and int!"
 					exit(0);
+			#print context;
+			if ( '@_func_'+node.children[0].val ) in context :
+				print "Fatal: Cannot assign to function identifier "+node.children[0].val;
+				exit(0);
+			if (node.children[0].val_type != node.children[2].val_type) \
+			   and( node.children[0].val_type.find('[') or \
+				node.children[0].val_type.find('@struct_') or \
+				node.children[2].val_type.find('[') or \
+				node.children[2].val_type.find('@struct_') \
+			):
+					print "Fatal: Cannot directly do assignment between a "+ \
+						node.children[0].val_type+" and a "+node.children[2].val_type;
+					exit(0);
+			
 			# a <- exp
 			node.val_type = node.children[0].val_type ;
 	elif ( node.type=='relational_exp' or node.type=='logical_exp'):

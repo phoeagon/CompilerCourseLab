@@ -1,0 +1,6 @@
+
+int $[main]{ //missing semicolon
+   1+2
+    
+}
+

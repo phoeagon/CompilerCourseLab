@@ -1,0 +1,6 @@
+
+int $[main]{
+    main <- 1; //attempt to change function identifier
+    
+}
+

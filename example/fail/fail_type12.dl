@@ -1,0 +1,6 @@
+int main;
+int $[main]{ // duplicate identifier
+   return 0;
+    
+}
+

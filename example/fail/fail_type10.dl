@@ -1,0 +1,11 @@
+
+int $[main]{
+    struct example{
+        int a ;
+        string b;
+    } obj;
+    string a;
+    a <- obj ; //incompatible type
+    
+}
+
