@@ -1,0 +1,23 @@
+int $[main]{
+    int y;
+    string t;
+    
+    $[ hla_stdout_putc : 10 ];
+    $[ hla_stdout_puts : "String Copy Test:"];
+    $[ hla_stdout_putc : 10 ];
+    t <- $[hla_stralloc : 1024];
+    $[hla_str_cpy : "Hello", t];
+    $[ hla_stdout_puts : t];
+    $[ hla_stdout_putc : 10 ];
+
+    
+    $[ hla_stdout_putc : 10 ];
+    $[ hla_stdout_puts : "String Echo Test:"];
+    $[ hla_stdout_putc : 10 ];
+    $[ hla_stdout_puts : "Please input a line:"];
+    $[ hla_stdout_putc : 10 ];
+    t <- $[hla_stralloc : 1024];
+    $[ hla_stdin_gets : t ];
+    $[ hla_stdout_puts : t];
+    $[ hla_stdout_putc : 10 ];
+}

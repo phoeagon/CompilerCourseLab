@@ -7,7 +7,7 @@ from ply.lex import TOKEN
 # Reserved words
 reserved = (
     'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO',
-    'ELSE', 'FLOAT', 'FOREACH', 'FOR', 'GOTO', 'IN', 'IF', 'INT', 
+    'ELSE', 'FLOAT', 'FOREACH', 'FOR', 'GOTO', 'IN', 'IF', 'INT','STRING',
     'RETURN', 'SIZEOF', 'STATIC', 'STRUCT', 
       'VOID',  'WHILE', 'DEFINE'
     )

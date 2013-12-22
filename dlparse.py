@@ -86,6 +86,7 @@ def p_type_spec_1(t):
 				| CHAR
 				| INT 
 				| FLOAT
+				| STRING
 	'''
 	t[0] = Node( "type_spec" , "" , [ t[1] ] )
 	

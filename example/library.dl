@@ -25,12 +25,12 @@ int $[output_routine]{
 
 int $[main]{
     int y;
+    string t;
     $[ hla_stdout_puts : "Random Number Test:"];
     $[ hla_stdout_putc : 10 ];
     $[hla_rand_randomize];
     $[input_routine];
     $[output_routine];
-
 
     $[ hla_stdout_putc : 10 ];
     $[ hla_stdout_puts : "Hexidecimal Test:"];
