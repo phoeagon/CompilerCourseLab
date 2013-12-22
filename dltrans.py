@@ -71,7 +71,15 @@ def translate_postfix_exp(node):
 		return tmp
 	elif len(node.children)==4 and node.children[0]=='$':
 		#FUNCALL LBRACKET  ident  RBRACKET
-		return ["_func_"+node.children[2].val+"();","push(eax);"];
+		if is_internal(node.children[2].val):
+			tmp = [];
+			routine = node.children[2].val[4:]
+			routine = routine.replace('_','.');
+			tmp.append( 'call '+routine +';' );
+			tmp.append("push(eax);");
+			return tmp;
+		else:
+			return ["_func_"+node.children[2].val+"();","push(eax);"];
 	return [];
 
 def translate_argument_exp_list(node):
@@ -333,7 +341,7 @@ def translate_binary_exp( node ):
 		tmp.append( "xor(eax,eax);" );
 		tmp.append("endif;");	
 	elif node.val == '<':
-		tmp.append("if( (type int32 eax)<=(type int32 ebx) ) then");
+		tmp.append("if( (type int32 eax)<(type int32 ebx) ) then");
 		tmp.append("mov(1,eax);");
 		tmp.append("else");
 		tmp.append( "xor(eax,eax);" );
