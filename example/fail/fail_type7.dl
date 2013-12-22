@@ -1,0 +1,10 @@
+
+int $[main]{
+    struct example{
+        int a ;
+        string b;
+    } obj;
+    obj->c <- 1;//invalid field
+    
+}
+

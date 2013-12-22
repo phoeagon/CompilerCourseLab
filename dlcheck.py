@@ -6,6 +6,8 @@ from dlcheck2 import is_internal
 
 import dlparse 
 
+hla_return_type = {'stralloc':'string','stdin_gets':'string'};
+
 current_routine_return_type='void';
 Node=dlparse.Node
 
@@ -35,13 +37,15 @@ def check_param_empty( func_name , context ):
 	err_msg = 'Parameter list not fit for function '+func_name ;
 	tmp = '@_func_'+func_name
 	if tmp not in context:
-		raise Exception( err_msg );
+		print "Fatal: ",err_msg
+		exit(0)
 	tmp2 = context[ tmp ];
 	if  '@params-cnt' not in tmp2 :
 		return True;
 	params_cnt = tmp2[ '@params-cnt' ];
 	if params_cnt > 0 :
-		raise Exception( err_msg );
+		print "Fatal: ",err_msg
+		exit(0)
 	return True;
 	
 def check_param_type ( node , func_name , context ):
@@ -52,16 +56,17 @@ def check_param_type ( node , func_name , context ):
 	param_to_list ( node , ll );
 	tmp = '@_func_'+func_name
 	if tmp not in context:
-		raise Exception( err_msg );
+		print "Fatal: ",err_msg
+		exit(0)
 	tmp2 = context[ tmp ];
 	if ( '@params-cnt' not in tmp2 or
 		'@params' not in tmp2 ):
-		raise Exception( err_msg );
+		print "Fatal: ",err_msg
+		exit(0)
 	param_cnt = tmp2[ '@params-cnt' ]
 	if ( param_cnt != len(ll) ):
 		print "Fatal: "+"Not of same length!\t"+err_msg;
 		exit(0);
-		raise Exception( "Not of same length!\n"+err_msg );
 	for i in range( len(ll) ):
 		if ll[i] != tmp2[ '@params' ][i] :
 			if ( ll[i] not in rng  ) or \
@@ -69,7 +74,6 @@ def check_param_type ( node , func_name , context ):
 				#rng[ll[i]] > rng
 				print "Fatal: ",  err_msg ;
 				exit(0);
-				#raise Exception( err_msg );
 	return True;
 
 def general_check( node , context ):
@@ -156,31 +160,35 @@ def check_struct_spec( node , context ):
 def check_postfix_expr( node , context ):
 	if ( node.type=='postfix_exp' ):
 		if ( node.children[1] == '->' ): #TODO!!!!!!!!!!!!!!!
-			err_msg = "Cannot find field "+str(node.children[2])\
+			err_msg = "Cannot find field "+str(node.children[2].val)\
 					+" for object "+str(node.children[0].val) ;
 			if ( node.children[0].val not in context ):
-				debug_node( node , context )
-				raise Exception( err_msg );
+				print "Fatal: ",err_msg
+				exit(0);
 			tmp = context[ node.children[0].val ];
 			if ( tmp not in context ):
-				print "tmp<-",tmp
-				debug_node( node , context )
-				raise Exception( err_msg );
+				#print "tmp<-",tmp
+				print "Fatal: ",err_msg
+				exit(0);
 			if ( '@fields' not in context[tmp] or
 				node.children[2].val not in context[tmp]['@fields'] ):
 				debug_node( node , context )
-				raise Exception( err_msg );
+				print "Fatal: ",err_msg
+				exit(0);
 			node.val_type = context[tmp]['@fields'][ node.children[2].val ];
 			#
 		elif ( node.children[0]=='$'): #TODO: Check argument type
 			# FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
 			tmp = node.children[2].val
 			if is_internal( tmp ):
-				node.val_type = 'int'
+				if ( tmp[4:] in hla_return_type ):
+					node.val_type = hla_return_type[ tmp[4:] ];
+				else:
+					node.val_type = 'int'
 				return True
 			node.val_type = context[ tmp ] ;
 			if ( len(node.children) == 6 ):
-				#debug_node( node , context ); raise Exception();
+				#debug_node( node , context );
 				check_param_type( node.children[4] , tmp , context );
 			else:
 				check_param_empty( tmp , context );
@@ -273,10 +281,12 @@ def walk( node , context ):
 		node.type=='selection_stat' ):
 			if  node.children[0]=='while' :
 				if  node.children[2].val_type == 'void' :
-					raise Exception( "Invalid condition" );
+					print "Fatal: ","Invalid condition"
+					exit(0);
 			elif node.children[0] == 'do' :
 				if  node.children[4].val_type == 'void' :
-					raise Exception( "Invalid condition" );
+					print "Fatal: ","Invalid condition"
+					exit(0);
 	elif (  node.type=='jump_stat' or\
 			 node.type=='stat_list' or\
 			node.type=='compound_stat' ):
@@ -285,7 +295,7 @@ def walk( node , context ):
 				if len(node.children)>2 and current_routine_return_type=='void':
 					print "Fatal: Cannot return with value for current function (because has no ret value)"
 					exit(0);
-				elif node.children[1].val_type != current_routine_return_type :
+				elif len(node.children)>2 and node.children[1].val_type != current_routine_return_type :
 					print "Fatal: Cannot return with value for current function (of return type "\
 						+current_routine_return_type+")"
 					exit(0);
@@ -299,6 +309,12 @@ def walk( node , context ):
 	#elif ( node.type=='p_exp'): #DUMMY STUB
 	elif ( node.type=='assignment_exp'):
 		if ( len ( node.children ) > 1 ):
+			if ( node.children[0].val_type == "string" and \
+				node.children[2].val_type == "int" ) or \
+				( node.children[2].val_type == "string" and \
+				node.children[0].val_type == "int" ):
+					print "Fatal: Incompatible type between string and int!"
+					exit(0);
 			# a <- exp
 			node.val_type = node.children[0].val_type ;
 	elif ( node.type=='relational_exp' or node.type=='logical_exp'):
@@ -309,9 +325,10 @@ def walk( node , context ):
 			legal = ('int','char','float')
 			for i in pool:
 				if ( i not in legal ):
-					debug_node( node , context )
-					raise Exception('Operator '+node.children[1]+ \
+					#debug_node( node , context )
+					print "Fatal:" + ('Operator '+node.children[1]+ \
 						' not applicable to type '+i)
+					exit(0);
 			node.val_type = 'int' #default to int
 		else:
 			node.val_type = node.children[0].val_type ;			
@@ -324,9 +341,10 @@ def walk( node , context ):
 			legal = ('int','char','float')
 			for i in pool:
 				if ( i not in legal ):
-					debug_node( node , context )
-					raise Exception('Operator '+node.children[1]+ \
-						' not applicable to type '+i)
+					#debug_node( node , context )
+					print "Fatal: ",('Operator '+node.children[1]+ \
+									' not applicable to type '+i)
+					exit(0)
 			if ( 'float' in pool ):			
 				node.val_type = 'float'
 			elif ( 'int' in pool ):
