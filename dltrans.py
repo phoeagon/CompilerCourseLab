@@ -64,8 +64,8 @@ def translate_postfix_exp(node):
 			tmp.extend( translate_argument_exp_list( node.children[4] ) );
 			tmp.extend(["call("+"_func_"+node.children[2].val+");" ]);
 			# I still don't know why this is not needed
-			#stack_back=str(4*count_argument_exp_list( node.children[4] ));
-			#tmp.append("add("+stack_back+",esp);");
+		#stack_back=str(4*count_argument_exp_list( node.children[4] ));
+		#tmp.append("add("+stack_back+",esp);");
 		tmp.extend([ "pop(edi);","pop(esi);","pop(edx);","pop(ecx);","pop(ebx);"]);
 		tmp.extend([ "push(eax);" ])
 		return tmp
@@ -87,8 +87,8 @@ def translate_argument_exp_list(node):
 		return [];
 	elif node.type=='argument_exp_list':
 		tmp = [];
-		for i in range(len(node.children)-1,0,-1):
-			tmp=translate_argument_exp_list(node.children[i])+tmp #reverse order
+		for i in range(len(node.children)):
+			tmp=tmp+translate_argument_exp_list(node.children[i]) #reverse order
 		return tmp;
 	else : #if node.type=='assignment_exp':
 		return translate( node )
@@ -98,7 +98,7 @@ def count_argument_exp_list(node):
 		return 0;
 	elif node.type=='argument_exp_list':
 		tmp = 0;
-		for i in range(len(node.children)-1,0,-1):
+		for i in range(len(node.children)):
 			tmp+=count_argument_exp_list(node.children[i])
 		return tmp;
 	else : #if node.type=='assignment_exp':

@@ -27,7 +27,6 @@ begin main;
 	pushd(10);
 	call stdout.putc;
 	pop(edi);
-	pop(esi);
 	pop(edx);
 	pop(ecx);
 	pop(ebx);
