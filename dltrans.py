@@ -346,6 +346,12 @@ def translate_binary_exp( node ):
 	tmp.extend( [ "pop(ebx);" , "pop(eax);"  ] )
 	if  node.val == '+':
 		tmp.append("add(ebx, eax);");
+	elif node.val == '<<':
+		tmp.append("shl(ebx, eax);");
+	elif node.val == '>>':
+		tmp.append("shr(ebx, eax);");
+	elif node.val == '^':
+		tmp.append("xor(ebx, eax);");
 	elif node.val == '-':
 		tmp.append("sub(ebx, eax);");
 	elif node.val == '*':

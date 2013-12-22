@@ -219,7 +219,11 @@ def p_assignment_exp(t):
 def p_logical_exp(t):
 	'''logical_exp	: relational_exp
 				| logical_exp LOR relational_exp
-				| logical_exp LAND relational_exp'''
+				| logical_exp LAND relational_exp
+				| logical_exp XOR relational_exp
+				| logical_exp LSHIFT relational_exp
+				| logical_exp RSHIFT relational_exp
+				'''
 	if ( collapse(t) ):
 		return
 	t[0]=Node("logical_exp","", t[1:] )
