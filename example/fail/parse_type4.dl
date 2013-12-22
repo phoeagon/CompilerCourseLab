@@ -1,0 +1,4 @@
+
+int $[main]{
+    i<-5;//undeclared variable
+}
