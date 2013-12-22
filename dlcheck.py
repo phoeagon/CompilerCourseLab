@@ -346,6 +346,10 @@ if __name__ == "__main__":
 	from dlang import *
 	import dlang
 	walk( obj , context )
+
+	from dltrans import forbid_global_struct;
+	forbid_global_struct( context );
+	
 	#debug_node( obj , context )
 	if outputFormat=="xml":
 		import gnosis.xml.pickle

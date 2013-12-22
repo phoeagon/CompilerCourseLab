@@ -1,0 +1,34 @@
+
+int $[main]{
+    struct example{
+        int a ;
+        string b;
+    } obj;
+    int j;
+    // initial j
+    j <- 0 ;
+    $[ hla_stdout_puts : "j==" ];
+    $[ hla_stdout_puti32 : j ];
+    $[ hla_stdout_putc : 10 ];
+
+    //assign to obj->a
+    obj->a <- 3;
+    $[ hla_stdout_puts : "obj->a==" ];
+    $[ hla_stdout_puti32 : obj->a ];
+    $[ hla_stdout_putc : 10 ];
+
+    //assign to j
+    j <- obj->a;
+    $[ hla_stdout_puts : "j==" ];
+    $[ hla_stdout_puti32 : j ];
+    $[ hla_stdout_putc : 10 ];
+
+
+    //assign to obj->b
+    obj->b <- $[hla_stralloc : 1024];
+    $[hla_str_cpy : "Hello", obj->b];
+    $[ hla_stdout_puts : "obj->b==" ];
+    $[ hla_stdout_puts : obj->b ];
+    $[ hla_stdout_putc : 10 ];
+}
+

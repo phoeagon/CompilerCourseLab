@@ -6,7 +6,8 @@ import random
 from dlcheck2 import is_internal
 
 procedure_code = [];
-global_code = [];
+global_static = [];
+global_typedef = [];
 
 global_vars = {};
 
@@ -16,6 +17,8 @@ def get_type( typename ):
 		return 'int32'
 	elif typename == 'arr':
 		return 'ArrayType'
+	elif typename[0]=='@':
+		return typename[1:];
 	else:
 		return typename;
 
@@ -50,7 +53,13 @@ def translate_postfix_exp(node):
 		return tmp
 	elif len(node.children)==3:
 		#a->id
-		return [];
+		tmp = [];
+		typename =  node.children[0].val_type[1:];
+		fieldname = node.children[2].val;
+		tmp.extend( translate_leftvalue( node.children[0] ) )
+		tmp.append( "pop(eax);" );
+		tmp.append("pushd( (type "+typename+" [eax])."+fieldname+" );");
+		return tmp;
 	elif len(node.children)==6:
 		#FUNCALL LBRACKET  ident COLON argument_exp_list RBRACKET
 		tmp = ["push(ebx);","push(ecx);","push(edx);","push(esi);","push(edi);"];
@@ -416,6 +425,16 @@ def translate_leftvalue( node ):
 		tmp.extend( [ "pop(ebx);", "pop(eax);" ] )
 		tmp.extend( ["lea(eax,[eax+ebx*4]);", "push(eax);"] )
 		return tmp;
+	elif node.type=='postfix_exp'and len(node.children)==3:
+		# id->field
+		tmp = [];
+		typename =  node.children[0].val_type[1:];
+		fieldname = node.children[2].val;
+		tmp.extend( translate_leftvalue( node.children[0] ) )
+		tmp.append( "pop(eax);" );
+		tmp.append("lea(eax , (type "+typename+" [eax])."+fieldname+" );");
+		tmp.append("push(eax);");
+		return tmp;
 	else:
 		for i in range(len(node.children)):
 			if isinstance(node.children[i],Node):
@@ -512,28 +531,52 @@ def translate_static( context ):
 
 	#for i in tmp:
 	#	print i
-	global global_code
-	if len(global_code)==0:
-		global_code.append("static");
-	global_code.extend( tmp );
+	global global_static
+	if len(global_static)==0:
+		global_static.append("static");
+	global_static.extend( tmp );
 	return tmp ;
 
 
 def add_literal( content , random_tag ):
-	global global_code
-	if len(global_code)==0:
-		global_code.append("static");
-	global_code.append( "\t"+random_tag +": string := "+ content +";");
+	global global_static
+	if len(global_static)==0:
+		global_static.append("static");
+	global_static.append( "\t"+random_tag +": string := "+ content +";");
 	
 
 def translate_everything():
 	tag=get_random_tag("prog");
 	print "program "+tag+";"
 	print "#include( \"stdlib.hhf\" );"
-	for line in global_code:
+	for line in global_typedef:
+		print line
+	for line in global_static:
 		print line
 	for line in procedure_code:
 		print line
 	print "begin "+tag+";"
 	print "\t call(_func_main);"
 	print "end "+tag+";"
+
+def forbid_global_struct( context ):
+	for i in context:
+		if i[0:8]=='@struct_':
+			print "Global struct forbidden!!!!!"
+			exit(0);
+
+def translate_field_list( node , context ):
+	struct_name = 'struct_'+node.val[8:];
+	tmp = [];
+	if '@fields' not in context:
+		return tmp;
+	tmp.append( "type "+struct_name+" :" );
+	tmp.append( "record" );
+	for field in context['@fields']:
+		tmp.append("\t"+field+" : "+get_type(context['@fields'][field])+';' );
+	tmp.append( "endrecord;" ); 
+	#for line in tmp:
+	#	print line;
+	global global_typedef;
+	global_typedef.extend( tmp );
+	return tmp ;

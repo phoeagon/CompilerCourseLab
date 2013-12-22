@@ -151,6 +151,7 @@ def check_struct_spec( node , context ):
 			sub_context = copy.copy( context );
 			node.val = '@struct_'+node.children[1].val;
 			walk ( node.children[3] , sub_context );
+			translate_field_list( node , sub_context );
 			context[ node.val ] = sub_context ;
 		return True ;
 	return False;
@@ -367,6 +368,9 @@ if __name__ == "__main__":
 	from dlang import *
 	import dlang
 	walk( obj , context )
+	
+	forbid_global_struct( context );
+	
 	translate_static( context )
 	translate_everything()
 	exit(0)
