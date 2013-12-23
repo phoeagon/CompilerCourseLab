@@ -494,7 +494,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.runButt.setEnabled(True)
 		pass
 	def runCode(self):
-		os.system("xterm -e '" + self.fileName.replace(".dl", ".out") + "; read'")
+		os.system("xterm -e '" + self.fileName.replace(".dl", ".out") + "; read' &")
 		pass
 	def close(self):
 		if self.codeFrame is not None:
