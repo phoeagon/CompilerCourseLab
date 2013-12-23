@@ -203,7 +203,7 @@ def check_postfix_expr( node , context ):
 				check_param_empty( tmp , context );
 			
 		elif ( node.children[1]== '[' ): #CHECk TYPE
-			node.val_type = node.children[0].val_type;
+			node.val_type = node.children[0].val_type[0:node.children[0].val_type.rfind('[')];
 		return True;
 	return False;
 
@@ -236,14 +236,18 @@ def walk( node , context ):
 	elif ( node.type=='decl' ): #TODO
 		node.val_type = 'void';
 		context[ node.children[1].val ] = node.children[0].val ;
+		if len(node.children)>1:
+			if len(node.children[1].children)==4:
+				if (node.children[1].children[1]=='['):
+					context[ node.children[1].val ] += "["+str(node.children[1].children[2].val)+"]";
 	#elif ( node.type=='translation_unit' ): return ;
 	#elif ( node.type=='external_decl' ): return ;
-	elif ( node.type=='decl' ): #TODO
-		if ( node.children[1].val_type == 'pointer'):
-			context[ node.children[1].val ] = 'pointer'
-		else:
-			context[ node.children[1].val ] = node.children[1].val_type;
-		node.val_type = 'void';
+	#elif ( node.type=='decl' ): #TODO
+	#	if ( node.children[1].val_type == 'pointer'):
+	#		context[ node.children[1].val ] = 'pointer'
+	#	else:
+	#		context[ node.children[1].val ] = node.children[1].val_type;
+	#	node.val_type = 'void';
 	#elif ( node.type=='decl_list' ): 
 	elif ( node.type=='type_spec' ): #TODO
 		if ( isinstance( node.children[0] , Node ) ):
