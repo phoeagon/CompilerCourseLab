@@ -15,11 +15,11 @@ int $[output_routine : int n]{
     }
     $[ hla_stdout_putc : 10];
 }
-void $[ q_sort : int left, int right]{//quicksort
+void $[ q_sort : int left, int right] { //quicksort
 	int pivot;
 	int l_hold;
 	int r_hold;
-    int tmp ;
+	int tmp ;
 	l_hold <- left;
 	r_hold <- right;
 	pivot <- numbers[left];
