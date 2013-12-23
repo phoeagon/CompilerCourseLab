@@ -118,14 +118,30 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="symbolTable">
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>40</y>
-      <width>171</width>
-      <height>41</height>
+      <x>350</x>
+      <y>10</y>
+      <width>141</width>
+      <height>71</height>
      </rect>
     </property>
     <property name="text">
-     <string>Show SymbolTable</string>
+     <string>SymbolTable</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="runButt">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>10</y>
+      <width>141</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">image: url(:/icon/playIcon.png);</string>
+    </property>
+    <property name="text">
+     <string>Run</string>
     </property>
    </widget>
   </widget>
@@ -146,7 +162,9 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="img/resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>lexButt</sender>
@@ -235,12 +253,28 @@ p, li { white-space: pre-wrap; }
    <slot>showSymbolTable()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>536</x>
-     <y>84</y>
+     <x>490</x>
+     <y>102</y>
     </hint>
     <hint type="destinationlabel">
      <x>605</x>
      <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>runButt</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>runCode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>591</x>
+     <y>81</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>658</x>
+     <y>266</y>
     </hint>
    </hints>
   </connection>
@@ -252,5 +286,6 @@ p, li { white-space: pre-wrap; }
   <slot>semanticCheck()</slot>
   <slot>codeGen()</slot>
   <slot>showSymbolTable()</slot>
+  <slot>runCode()</slot>
  </slots>
 </ui>

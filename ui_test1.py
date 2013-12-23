@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'compilerUI.ui'
 #
-# Created: Sat Dec 21 23:00:52 2013
+# Created: Mon Dec 23 18:43:44 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -40,8 +40,12 @@ class Ui_MainWindow(object):
         self.treeView.setObjectName("treeView")
         self.treeView.header().setVisible(True)
         self.symbolTable = QtGui.QPushButton(self.centralwidget)
-        self.symbolTable.setGeometry(QtCore.QRect(480, 40, 171, 41))
+        self.symbolTable.setGeometry(QtCore.QRect(350, 10, 141, 71))
         self.symbolTable.setObjectName("symbolTable")
+        self.runButt = QtGui.QPushButton(self.centralwidget)
+        self.runButt.setGeometry(QtCore.QRect(510, 10, 141, 71))
+        self.runButt.setStyleSheet("image: url(:/icon/playIcon.png);")
+        self.runButt.setObjectName("runButt")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar()
         self.menubar.setGeometry(QtCore.QRect(0, 0, 676, 22))
@@ -60,10 +64,11 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.semanticButt, QtCore.SIGNAL("clicked()"), MainWindow.semanticCheck)
         QtCore.QObject.connect(self.codeGenButt, QtCore.SIGNAL("clicked()"), MainWindow.codeGen)
         QtCore.QObject.connect(self.symbolTable, QtCore.SIGNAL("clicked()"), MainWindow.showSymbolTable)
+        QtCore.QObject.connect(self.runButt, QtCore.SIGNAL("clicked()"), MainWindow.runCode)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "DLang", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
         self.openButt.setText(QtGui.QApplication.translate("MainWindow", "Open..", None, QtGui.QApplication.UnicodeUTF8))
         self.lexButt.setText(QtGui.QApplication.translate("MainWindow", "Lexial Check", None, QtGui.QApplication.UnicodeUTF8))
         self.grammarButt.setText(QtGui.QApplication.translate("MainWindow", "Grammar Analysis", None, QtGui.QApplication.UnicodeUTF8))
@@ -74,6 +79,8 @@ class Ui_MainWindow(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Lucida Grande\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.symbolTable.setText(QtGui.QApplication.translate("MainWindow", "Show SymbolTable", None, QtGui.QApplication.UnicodeUTF8))
+        self.symbolTable.setText(QtGui.QApplication.translate("MainWindow", "SymbolTable", None, QtGui.QApplication.UnicodeUTF8))
+        self.runButt.setText(QtGui.QApplication.translate("MainWindow", "Run", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "Open..", None, QtGui.QApplication.UnicodeUTF8))
 
+import resource_rc

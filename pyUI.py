@@ -363,6 +363,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.symbolTable.setEnabled(False)
 		self.codeGenButt.setEnabled(False)
 		self.lexButt.setEnabled(False)
+		self.runButt.setEnabled(False)
 	def useConsole(self):
 		self.consoleField.setVisible(True)
 		self.treeView.setVisible(False)
@@ -446,12 +447,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				f.close()
 		#os.system("rm tmp.xml")
 		self.semanticButt.setEnabled(True)
-		self.symbolTable.setEnabled(True)
 	def semanticCheck(self):
-		self.codeGenButt.setEnabled(True)
-		pass
-	def showSymbolTable(self):
-		self.useTree()
 		os.system("python dlcheck.py --serializeTheOBJ < "+ self.fileName + " | grep -n -P '(Syntax error)|(Fatal)' > symTab")
 		with open("symTab", 'r') as f:
 			tmp = f.read()
@@ -460,6 +456,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				msgBox.setText("Panic!\n"+tmp)
 				msgBox.exec_()
 				return
+		os.system("rm symTab")
+		self.codeGenButt.setEnabled(True)
+		self.symbolTable.setEnabled(True)
+		pass
+	def showSymbolTable(self):
+		self.useTree()
 		inputFile = open("symTab.dump", 'rb')
 		context = pickle.load(inputFile)
 		inputFile.close()
@@ -473,7 +475,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#self.consoleField.setPlainText(str)
 		pass
 	def codeGen(self):
-		f = os.popen("python ./dlcheck2.py <" + self.fileName + " | tail -n +3")
+		asmFileName = self.fileName.replace(".dl", ".hla")
+		exeFileName = self.fileName.replace(".dl", ".out")
+		os.system("python ./dlcheck2.py <" + self.fileName + " | tail -n +3 > " + asmFileName)
+		f = open(asmFileName, "r")
 		assembly = f.read()
 		assembly = assembly.replace("\n", "<br/>").replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
 		
@@ -483,6 +488,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.asmFrame = CodeWindow("", self, "ASM")
 		self.asmFrame.setContent(assembly)
 		self.asmFrame.show()
+		
+		os.system("hla -x:" + exeFileName + " " + asmFileName)
+		os.system("rm " + asmFileName)
+		self.runButt.setEnabled(True)
+		pass
+	def runCode(self):
+		os.system("xterm -e '" + self.fileName.replace(".dl", ".out") + "; read'")
 		pass
 	def close(self):
 		if self.codeFrame is not None:
