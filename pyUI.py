@@ -414,7 +414,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		
 	def grammarAnalysis(self):
 		self.useTree()
-		os.system("python dlcheck.py < "+ self.fileName + "| tail -n +3 > tmp.json")
+		os.system("python dlgrammar.py < "+ self.fileName + "| tail -n +3 > tmp.json")
 		try:
 			with open("tmp.json", 'r') as f:
 				j = json.loads(f.read())
