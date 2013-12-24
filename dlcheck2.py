@@ -165,6 +165,9 @@ def check_postfix_expr( node , context ):
 				debug_node( node , context )
 				raise Exception( err_msg );
 			tmp = context[ node.children[0].val ];
+			#print tmp
+			if type(tmp)==dict:
+				tmp=node.children[0].val
 			if ( tmp not in context ):
 				print "tmp<-",tmp
 				debug_node( node , context )
@@ -192,7 +195,8 @@ def check_postfix_expr( node , context ):
 			node.val_type = node.children[0].val_type;
 			bracket_sub=node.val_type.find('[');
 			if bracket_sub != -1:
-				node.val_type = node.val_type[0:bracket_sub];
+				node.val_type = node.val_type[0:bracket_sub];			
+			node.val = node.children[0].val_type[0:node.children[0].val_type.rfind('[')];
 		return True;
 	return False;
 

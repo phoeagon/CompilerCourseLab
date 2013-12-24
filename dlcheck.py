@@ -171,10 +171,13 @@ def check_postfix_expr( node , context ):
 		if ( node.children[1] == '->' ): #TODO!!!!!!!!!!!!!!!
 			err_msg = "Cannot find field "+str(node.children[2].val)\
 					+" for object "+str(node.children[0].val) ;
+			#print "node.children[0].val:",node.children[0].val
 			if ( node.children[0].val not in context ):
 				print "Fatal: ",err_msg
 				exit(0);
 			tmp = context[ node.children[0].val ];
+			if type(tmp)==dict:
+				tmp=node.children[0].val
 			if ( tmp not in context ):
 				#print "tmp<-",tmp
 				print "Fatal: ",err_msg
@@ -204,6 +207,7 @@ def check_postfix_expr( node , context ):
 			
 		elif ( node.children[1]== '[' ): #CHECk TYPE
 			node.val_type = node.children[0].val_type[0:node.children[0].val_type.rfind('[')];
+			node.val = node.children[0].val_type[0:node.children[0].val_type.rfind('[')];
 		return True;
 	return False;
 
