@@ -268,6 +268,10 @@ def walk( node , context ):
 		if ( '@fields' not in context ):
 			context[ '@fields' ] = {};
 		context[ '@fields' ][ node.children[1].val  ] = node.children[0].val ;
+		if len(node.children)>1:
+			if len(node.children[1].children)==4:
+				if (node.children[1].children[1]=='['):
+					context[ '@fields' ][ node.children[1].val  ] += "["+str(node.children[1].children[2].val)+"]";
 	#elif ( node.type=='declarator_list' ): 
 	elif ( node.type=='declarator' ):
 		if ( node.children[0]=='*' ):
