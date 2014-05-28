@@ -1,3 +1,11 @@
 Course Project of Compilers (2013 fall)
+===================================================================
 
-Currently using (http://www.dabeaz.com/ply/)
+This is a small compiler constructed using PLY (python-lex-yacc) and HLA (high level assembler).
+
+This compiler generates x86 ELF that can be executed on Linux. With appropriate setup of HLA, it can also be executed on other platforms.
+
+Examples of this DLang can be found in the `example` folder.
+
+
+Currently using PLY here (http://www.dabeaz.com/ply/).
